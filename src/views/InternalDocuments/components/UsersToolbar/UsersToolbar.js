@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, clicked, ...rest } = props;
 
   const classes = useStyles();
 
@@ -44,6 +44,7 @@ const UsersToolbar = props => {
         <Button className={classes.exportButton}>Export</Button>
         <Button
           color="primary"
+          onClick={clicked}
           variant="contained"
         >
           Add user
@@ -60,7 +61,8 @@ const UsersToolbar = props => {
 };
 
 UsersToolbar.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  clicked: PropTypes.func
 };
 
 export default UsersToolbar;

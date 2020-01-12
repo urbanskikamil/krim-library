@@ -15,7 +15,8 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   signOutButton: {
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+    color: 'white',
   },
 }));
 
@@ -42,12 +43,14 @@ const Topbar = props => {
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden mdDown>
-          <IconButton
-            className={classes.signOutButton}
-            color="inherit"
-          >
-            <InputIcon />
-          </IconButton>
+          <RouterLink to="/sign-in">
+            <IconButton
+              className={classes.signOutButton}
+              color="inherit"
+            >
+              <InputIcon />
+            </IconButton>
+          </RouterLink>
         </Hidden>
         <Hidden lgUp>
           <IconButton

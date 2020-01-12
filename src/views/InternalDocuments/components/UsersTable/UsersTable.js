@@ -8,7 +8,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  Avatar,
   Checkbox,
   Table,
   TableBody,
@@ -19,7 +18,7 @@ import {
   TablePagination
 } from '@material-ui/core';
 
-import { getInitials } from 'helpers';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -42,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UsersTable = props => {
-  const { className, users, ...rest } = props;
+  const { className, documentsData, ...rest } = props;
 
   const classes = useStyles();
 
@@ -51,12 +50,12 @@ const UsersTable = props => {
   const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
-    const { users } = props;
+    const { documentsData } = props;
 
     let selectedUsers;
 
     if (event.target.checked) {
-      selectedUsers = users.map(user => user.id);
+      selectedUsers = documentsData.map(doc => doc.id);
     } else {
       selectedUsers = [];
     }
@@ -105,58 +104,55 @@ const UsersTable = props => {
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedUsers.length === users.length}
+                      checked={selectedUsers.length === documentsData.length}
                       color="primary"
                       indeterminate={
                         selectedUsers.length > 0 &&
-                        selectedUsers.length < users.length
+                        selectedUsers.length < documentsData.length
                       }
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
+                  <TableCell>Typ dokumentu</TableCell>
+                  <TableCell>Nazwa</TableCell>
+                  <TableCell>Dotyczy</TableCell>
+                  <TableCell>Autor</TableCell>
+                  <TableCell>Promotor</TableCell>                  
+                  <TableCell>Dodane dnia</TableCell>
+                  <TableCell>Pobierz</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, rowsPerPage).map(user => (
+                {documentsData.slice(0, rowsPerPage).map(doc => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
-                    selected={selectedUsers.indexOf(user.id) !== -1}
+                    key={doc.id}
+                    selected={selectedUsers.indexOf(doc.id) !== -1}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedUsers.indexOf(user.id) !== -1}
+                        checked={selectedUsers.indexOf(doc.id) !== -1}
                         color="primary"
-                        onChange={event => handleSelectOne(event, user.id)}
+                        onChange={event => handleSelectOne(event, doc.id)}
                         value="true"
                       />
                     </TableCell>
                     <TableCell>
                       <div className={classes.nameContainer}>
-                        <Avatar
-                          className={classes.avatar}
-                          src={user.avatarUrl}
-                        >
-                          {getInitials(user.name)}
-                        </Avatar>
-                        <Typography variant="body1">{user.name}</Typography>
+                        <Typography variant="body1">{doc.type}</Typography>
                       </div>
                     </TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{doc.title}</TableCell>
+                    <TableCell>{doc.field}</TableCell>
+                    <TableCell>{doc.author}</TableCell>
+                    <TableCell>{doc.supervisor}</TableCell>
                     <TableCell>
-                      {user.address.city}, {user.address.state},{' '}
-                      {user.address.country}
+                      {moment(doc.addedAt).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>{user.phone}</TableCell>
                     <TableCell>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
-                    </TableCell>
+                      <GetAppIcon/>                    
+                    </TableCell>                   
                   </TableRow>
                 ))}
               </TableBody>
@@ -167,7 +163,7 @@ const UsersTable = props => {
       <CardActions className={classes.actions}>
         <TablePagination
           component="div"
-          count={users.length}
+          count={documentsData.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
           page={page}
@@ -181,7 +177,7 @@ const UsersTable = props => {
 
 UsersTable.propTypes = {
   className: PropTypes.string,
-  users: PropTypes.array.isRequired
+  documentsData: PropTypes.array.isRequired
 };
 
 export default UsersTable;

@@ -3,7 +3,7 @@
   "author": "Kamil Urbański",
   "email": "urbanski.kamil.agh@gmail.com",
   "licence": "AGH",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": false,
   "scripts": {
     "start": "react-scripts start",
