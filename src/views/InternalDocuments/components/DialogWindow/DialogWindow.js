@@ -1,39 +1,37 @@
-import React, {  } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
-//import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 
-const dialogWindow = (props) => {
+import InputField from './components/inputField'
+import TypeField from './components/TypeField'
+import ContainField from './components/ContainField'
 
-  // const useStyles = makeStyles(theme => ({
-  //   form: {
-  //     display: 'flex',
-  //     flexDirection: 'column',
-  //     margin: 'auto',
-  //     width: 'fit-content',
-  //   },
-  //   formControl: {
-  //     marginTop: theme.spacing(2),
-  //     minWidth: 120,
-  //   },
-  //   formControlLabel: {
-  //     marginTop: theme.spacing(1),
-  //   },
-  // }));
+const useStyles = makeStyles(theme => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'fit-content',
+  },
+  formControl: {
+    marginTop: theme.spacing(2),
+    minWidth: 120,
+    width: '170px'
+  },
+  formControlLabel: {
+    marginTop: theme.spacing(1),
+  },
+}));
 
-  // const classes = useStyles();
+const DialogWindow = (props) => {
+  const classes = useStyles();
 
   return(
     <Dialog 
@@ -47,51 +45,45 @@ const dialogWindow = (props) => {
            Aby dodać plik proszę wypełnić ponizszy formularz 
            i kliknąć przycisk "Dodaj"
         </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label="Email Address"
-          type="email"
-          fullWidth
+        <InputField/>
+        <TypeField
+          classes={classes}
+          documentType={props.documentType}
+          typeChange={props.typeChange} 
         />
-        <form  noValidate>
-          <FormControl style={{width: '170px'}}>
-            <InputLabel htmlFor="document-type">Typ dokumentu</InputLabel>
-            <Select
-              autoFocus
-              value={props.maxWidth}
-              onChange={props.widthChange}  
-              inputProps={{
-                name: 'document-type',
-                id: 'document-type',
-              }}
-            >
-              <MenuItem value="master-thesis">Praca magisterska</MenuItem>
-              <MenuItem value="bachelor-thesis">Praca inzynierska</MenuItem>
-              <MenuItem value="doctorate">Praca doktorska</MenuItem>
-            </Select>
-          </FormControl>
-        </form>
+        <ContainField
+          classes={classes}
+          contains={props.contains}
+          containsChange={props.containsChange} 
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.closed} color="primary">
-           Zamknij
+        <Button 
+          color="primary"
+          onClick={props.closed} 
+        >Zamknij
         </Button>
-        <Button onClick={props.closed} color="primary">
-           Dodaj
+        <Button 
+          color="primary"          
+          onClick={props.submited}
+        >Dodaj
         </Button>
       </DialogActions>
     </Dialog>
   )
 } 
 
-dialogWindow.propTypes = {
+DialogWindow.propTypes = {
   closed: PropTypes.func,
+  contains: PropTypes.array,
+  containsChange: PropTypes.func,
   dialogStatus: PropTypes.bool,
+  documentType: PropTypes.string,
   maxWidth: PropTypes.number,
   opened: PropTypes.func,
+  submited: PropTypes.func,
+  typeChange: PropTypes.func
 };
 
 
-export default dialogWindow
+export default DialogWindow
