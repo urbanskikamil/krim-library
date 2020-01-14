@@ -5,7 +5,7 @@ export default [
     id: uuid(),
     type: 'Praca magisterska',
     title: 'System wizyjny do analizy sytuacji drogowej',
-    field: 'informatyka, systemy wizyjne',
+    field: 'Informatyka, Systemy wizyjne',
     author: 'Kamil Urbanski',
     supervisor: 'dr. inz Piotr Kurowski',
     addedAt: 1555016400000
@@ -14,7 +14,7 @@ export default [
     id: uuid(),
     type: 'Praca magisterska',
     title: 'Mobilny robot',
-    field: 'mechanika, sterowanie',
+    field: 'Mechanika, Sterowanie',
     avatarUrl: '/images/avatars/avatar_4.png',
     author: 'Kamil Urbanski',
     supervisor: 'dr. inz Piotr Kurowski',
@@ -24,7 +24,7 @@ export default [
     id: uuid(),
     type: 'Praca inzynierska',
     title: 'Chwytak',
-    field: 'mechanika, robotyka',
+    field: 'Mechanika, Robotyka',
     author: 'Kamil Urbanski',
     supervisor: 'dr. inz Piotr Kurowski',
     createdAt: 1555016400000

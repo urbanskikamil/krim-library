@@ -45,7 +45,14 @@ const DialogWindow = (props) => {
            Aby dodać plik proszę wypełnić ponizszy formularz 
            i kliknąć przycisk "Dodaj"
         </DialogContentText>
-        <InputField/>
+        <InputField 
+          author={props.author}
+          authorChange={props.authorChange}
+          supervisor={props.supervisor}
+          supervisorChange={props.supervisorChange} 
+          title={props.title}
+          titleChange={props.titleChange}
+        />
         <TypeField
           classes={classes}
           documentType={props.documentType}
@@ -74,6 +81,8 @@ const DialogWindow = (props) => {
 } 
 
 DialogWindow.propTypes = {
+  author: PropTypes.string,
+  authorChange: PropTypes.func,
   closed: PropTypes.func,
   contains: PropTypes.array,
   containsChange: PropTypes.func,
@@ -82,6 +91,10 @@ DialogWindow.propTypes = {
   maxWidth: PropTypes.number,
   opened: PropTypes.func,
   submited: PropTypes.func,
+  supervisor: PropTypes.string,
+  supervisorChange: PropTypes.func,
+  title: PropTypes.string,
+  titleChange: PropTypes.func,
   typeChange: PropTypes.func
 };
 

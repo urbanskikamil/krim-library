@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import uuid from 'uuid/v1';
+import moment from 'moment';
 
 import { UsersToolbar, UsersTable } from './components';
 import mockData from './data';
@@ -11,39 +12,36 @@ class InternalDocuments extends Component {
   state = {
     documentsData: mockData,
     dialogOpen: false,
+    title: '',
+    author: '',
+    supervisor: '',
     documentType: '',
-    contains: []
+    contains: [],
+    date: ''
   }
 
-  componentDidUpdate = () => {
-    console.log(this.state.documentType, this.state.contains)
-  }
 
-  handleAddItem = () => {
-
-    console.log(this.state.documentsData)
-
-    //const clonedDocumentsData = [...this.state.documentsData]
-
-    // clonedDocumentsData.push({
-    //   id: uuid(),
-    //   type: 'Praca magisterska',
-    //   title: 'System wizyjny do analizy sytuacji drogowej',
-    //   field: 'informatyka, systemy wizyjne',
-    //   author: 'Kamil Urbanski',
-    //   supervisor: 'dr. inz Piotr Kurowski',
-    //   addedAt: 1555016400000
-    // })
-
-    this.setState({dialogOpen: true})
-
-  }
+  handleAddItem = () => {this.setState({dialogOpen: true})}
 
   handleDialogOpen = () => {this.setState({dialogOpen: true})}
 
-  handleDialogClose = () => {this.setState({dialogOpen: false})}
-  //classes = useStyles();
+  handleDialogClose = () => {
+    this.setState({
+      dialogOpen: false,
+      title: '',
+      author: '',
+      supervisor: '',
+      documentType: '',
+      contains: []
+    })
+  }
   handleTypeChange = (event) => {this.setState({documentType: event.target.value})}
+
+  handleTitleChange = (event) => {this.setState({title: event.target.value})}
+
+  handleAuthorChange = (event) => {this.setState({author: event.target.value})}
+  
+  handleSupervisorChange = (event) => {this.setState({supervisor: event.target.value})}
 
   handleContainsChange = (event) => {  
     let copiedContains = [...this.state.contains];
@@ -51,20 +49,32 @@ class InternalDocuments extends Component {
     this.setState({contains: copiedContains})
   }
   handleSubmit = () => {
+    const { documentType, title, contains, author, supervisor } = this.state
     const clonedDocumentsData = [...this.state.documentsData]
 
-    clonedDocumentsData.push({
-      id: uuid(),
-      type: this.state.documentType,
-      title: 'System wizyjny do analizy sytuacji drogowej',
-      field: this.state.contains,
-      author: 'Kamil Urbanski',
-      supervisor: 'dr. inz Piotr Kurowski',
-      addedAt: 1555016400000
-    })
-
-    this.setState({dialogOpen: false, documentsData: clonedDocumentsData})
-
+    if (title == '' || author == '' || supervisor == '' || documentType == '' || contains == []) 
+      alert('Prosze wypełnić wszystkie pola')
+    else{
+      clonedDocumentsData.push({
+        id: uuid(),
+        type: documentType,
+        title: title,
+        field: contains.join(', '),
+        author: author,
+        supervisor: supervisor,
+        addedAt: moment()
+        
+      })
+      this.setState({
+        dialogOpen: false, 
+        documentsData: clonedDocumentsData,
+        title: '',
+        author: '',
+        supervisor: '',
+        documentType: '',
+        contains: [],
+      })
+  }
   }
 
   render(){
@@ -75,15 +85,21 @@ class InternalDocuments extends Component {
           <UsersTable documentsData={this.state.documentsData} />
         </div>
         <DialogWindow
+          author={this.state.author}
+          authorChange={this.handleAuthorChange}
           closed={this.handleDialogClose}
+          contains={this.state.contains}
+          containsChange={(event) => this.handleContainsChange(event)}
           dialogStatus={this.state.dialogOpen}
+          documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           opened={this.handleDialogOpen}
-          typeChange={(event) => this.handleTypeChange(event)}
-          documentType={this.state.documentType}
-          containsChange={(event) => this.handleContainsChange(event)}
-          contains={this.state.contains}
           submited={this.handleSubmit}
+          supervisor={this.state.supervisor}
+          supervisorChange={this.handleSupervisorChange}
+          title={this.state.title}
+          titleChange={this.handleTitleChange}
+          typeChange={(event) => this.handleTypeChange(event)}
         />
       </div>
     );

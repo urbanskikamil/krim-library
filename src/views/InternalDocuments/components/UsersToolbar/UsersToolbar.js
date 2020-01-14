@@ -40,20 +40,20 @@ const UsersToolbar = props => {
     >
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button>
+        {/* <Button className={classes.importButton}>Import</Button>
+        <Button className={classes.exportButton}>Export</Button> */}
         <Button
           color="primary"
           onClick={clicked}
           variant="contained"
         >
-          Add user
+          Dodaj dokument
         </Button>
       </div>
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
-          placeholder="Search user"
+          placeholder="Znajdź"
         />
       </div>
     </div>

@@ -45,10 +45,10 @@ const fields = [
   'Systemy wizyjne',
 ];
 
-function getStyles(name, personName, theme) {
+function getStyles(field, contains, theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
+      contains.indexOf(field) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
@@ -62,24 +62,32 @@ const ContainField = (props) => {
     <FormControl className={classes.formControl}>
       <InputLabel id="contains-chip-label">Dotyczy</InputLabel>
       <Select
-        required
-        labelId="contains-chip-label"
         id="contains-chip"
-        multiple
-        value={props.contains}
-        onChange={props.containsChange}
         input={<Input id="select-multiple-chip" />}
+        labelId="contains-chip-label"
+        MenuProps={MenuProps}
+        multiple
+        onChange={props.containsChange}
         renderValue={selected => (
           <div className={classes.chips}>
             {selected.map(value => (
-              <Chip key={value} label={value} className={classes.chip} />
+              <Chip 
+                className={classes.chip} 
+                key={value} 
+                label={value} 
+              />
             ))}
           </div>
         )}
-        MenuProps={MenuProps}
+        required
+        value={props.contains}
       >
         {fields.map(field => (
-          <MenuItem key={field} value={field} style={getStyles(field, props.contains, theme)}>
+          <MenuItem 
+            key={field} 
+            style={getStyles(field, props.contains, theme)}
+            value={field} 
+          >
             {field}
           </MenuItem>
         ))}
