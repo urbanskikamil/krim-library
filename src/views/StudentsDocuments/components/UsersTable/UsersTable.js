@@ -113,7 +113,7 @@ const UsersTable = props => {
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Typ</TableCell>
+                  <TableCell>Typ dokumentu</TableCell>
                   <TableCell>Nazwa</TableCell>
                   <TableCell>Dotyczy</TableCell>
                   <TableCell>Autor</TableCell>

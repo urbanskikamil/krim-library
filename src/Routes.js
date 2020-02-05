@@ -6,6 +6,7 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import InternalDocuments from './views/InternalDocuments/InternalDocuments'
 import ExternalDocuments from './views/ExternalDocuments/ExternalDocuments'
+import StudentsDocuments from './views/StudentsDocuments/StudentsDocuments'
 
 
 import {
@@ -41,6 +42,18 @@ const Routes = () => {
         layout={MainLayout}
         path="/internal"
       />
+      <RouteWithLayout
+        component={StudentsDocuments}
+        exact
+        layout={MainLayout}
+        path="/students"
+      />
+      {/* <RouteWithLayout
+        component={WorkersDocuments}
+        exact
+        layout={MainLayout}
+        path="/internal"
+      /> */}
       <RouteWithLayout
         component={ExternalDocuments}
         exact

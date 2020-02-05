@@ -6,39 +6,20 @@ import moment from 'moment';
 import { UsersToolbar, UsersTable } from './components';
 import mockData from './data';
 import theme from '../../theme/index'
-import axios from '../../axios-orders'
 
 import DialogWindow from './components/DialogWindow/DialogWindow'
-
-class InternalDocuments extends Component {
+class StudentsDocuments extends Component {
   state = {
-    documentsData: [],
+    documentsData: mockData,
     dialogOpen: false,
     title: '',
     author: '',
     supervisor: '',
     documentType: '',
     contains: [],
-    date: '',
-    data: []
-
+    date: ''
   }
 
-  componentDidMount () {
-    axios.get('/thesis')
-    .then( async response => {
-      // console.log(response)
-      await this.setState({documentsData: response.data})
-    })
-  }
-
-  // componentDidUpdate () {
-  //   axios.get('/thesis')
-  //   .then( async response => {
-  //     // console.log(response)
-  //     await this.setState({documentsData: response.data})
-  //   })
-  // }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
 
@@ -69,23 +50,24 @@ class InternalDocuments extends Component {
   }
   handleSubmit = () => {
     const { documentType, title, contains, author, supervisor } = this.state
+    const clonedDocumentsData = [...this.state.documentsData]
 
-    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
-      alert('Proszę wypełnić wszystkie pola')
+    if (title == '' || author == '' || supervisor == '' || documentType == '' || contains == []) 
+      alert('Prosze wypełnić wszystkie pola')
     else{
-      axios.post('/thesis', 
-        {
-          id: uuid(),
-          type: documentType,
-          title: title,
-          field: contains.join(', '),
-          author: author,
-          supervisor: supervisor,
-          addedAt: moment()
-        }
-      )
+      clonedDocumentsData.push({
+        id: uuid(),
+        type: documentType,
+        title: title,
+        field: contains.join(', '),
+        author: author,
+        supervisor: supervisor,
+        addedAt: moment()
+        
+      })
       this.setState({
         dialogOpen: false, 
+        documentsData: clonedDocumentsData,
         title: '',
         author: '',
         supervisor: '',
@@ -111,6 +93,7 @@ class InternalDocuments extends Component {
           dialogStatus={this.state.dialogOpen}
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
+          opened={this.handleDialogOpen}
           submited={this.handleSubmit}
           supervisor={this.state.supervisor}
           supervisorChange={this.handleSupervisorChange}
@@ -123,4 +106,4 @@ class InternalDocuments extends Component {
   }
 }
 
-export default InternalDocuments;
+export default StudentsDocuments;

@@ -44,8 +44,18 @@ const Sidebar = props => {
 
   const pages = [
     {
-      title: 'Dokumenty wewnętrzne',
+      title: 'Prace dyplomowe',
       href: '/internal',
+      icon: <PeopleIcon />
+    },
+    {
+      title: 'Prace studentów',
+      href: '/students',
+      icon: <PeopleIcon />
+    },
+    {
+      title: 'Prace pracowników',
+      href: '/workers',
       icon: <PeopleIcon />
     },
     {

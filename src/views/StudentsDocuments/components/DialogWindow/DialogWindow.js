@@ -89,6 +89,7 @@ DialogWindow.propTypes = {
   dialogStatus: PropTypes.bool,
   documentType: PropTypes.string,
   maxWidth: PropTypes.number,
+  opened: PropTypes.func,
   submited: PropTypes.func,
   supervisor: PropTypes.string,
   supervisorChange: PropTypes.func,
