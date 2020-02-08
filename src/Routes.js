@@ -4,7 +4,7 @@ import { Switch, Redirect } from 'react-router-dom';
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
-import InternalDocuments from './views/InternalDocuments/InternalDocuments'
+//import ThesisDocuments from './views/ThesisDocuments/ThesisDocuments'
 import ExternalDocuments from './views/ExternalDocuments/ExternalDocuments'
 import StudentsDocuments from './views/StudentsDocuments/StudentsDocuments'
 
@@ -12,14 +12,12 @@ import StudentsDocuments from './views/StudentsDocuments/StudentsDocuments'
 import {
   Dashboard as DashboardView,
   ProductList as ProductListView,
-  UserList as UserListView,
-  Typography as TypographyView,
-  Icons as IconsView,
   Account as AccountView,
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
-  NotFound as NotFoundView
+  NotFound as NotFoundView,
+  ThesisDocuments as ThesisDocumentsView
 } from './views';
 
 const Routes = () => {
@@ -28,7 +26,7 @@ const Routes = () => {
       <Redirect
         exact
         from="/"
-        to="/internal"
+        to="/documents/thesis"
       />
       <RouteWithLayout
         component={DashboardView}
@@ -37,10 +35,10 @@ const Routes = () => {
         path="/dashboardd"
       />
       <RouteWithLayout
-        component={InternalDocuments}
+        component={ThesisDocumentsView}
         exact
         layout={MainLayout}
-        path="/internal"
+        path="/documents/thesis"
       />
       <RouteWithLayout
         component={StudentsDocuments}
@@ -61,28 +59,10 @@ const Routes = () => {
         path="/external"
       />
       <RouteWithLayout
-        component={UserListView}
-        exact
-        layout={MainLayout}
-        path="/users"
-      />
-      <RouteWithLayout
         component={ProductListView}
         exact
         layout={MainLayout}
         path="/products"
-      />
-      <RouteWithLayout
-        component={TypographyView}
-        exact
-        layout={MainLayout}
-        path="/typography"
-      />
-      <RouteWithLayout
-        component={IconsView}
-        exact
-        layout={MainLayout}
-        path="/icons"
       />
       <RouteWithLayout
         component={AccountView}

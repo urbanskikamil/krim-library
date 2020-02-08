@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-//import { makeStyles } from '@material-ui/styles';
+import { Button } from '@material-ui/core';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { UsersToolbar, UsersTable } from './components';
-import mockData from './data';
+import { ThesisToolbar, ThesisTable } from './components';
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
 
 import DialogWindow from './components/DialogWindow/DialogWindow'
 
-class InternalDocuments extends Component {
+class ThesisDocuments extends Component {
   state = {
     documentsData: [],
     dialogOpen: false,
@@ -20,25 +19,15 @@ class InternalDocuments extends Component {
     documentType: '',
     contains: [],
     date: '',
-    data: []
-
+    selectedRecords: []
   }
 
   componentDidMount () {
-    axios.get('/thesis')
-    .then( async response => {
-      // console.log(response)
-      await this.setState({documentsData: response.data})
-    })
+    axios.get('/documents/thesis')
+      .then( async response => {
+        await this.setState({documentsData: response.data})
+      })
   }
-
-  // componentDidUpdate () {
-  //   axios.get('/thesis')
-  //   .then( async response => {
-  //     // console.log(response)
-  //     await this.setState({documentsData: response.data})
-  //   })
-  // }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
 
@@ -73,8 +62,7 @@ class InternalDocuments extends Component {
     if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
       alert('Proszę wypełnić wszystkie pola')
     else{
-      axios.post('/thesis', 
-        {
+      axios.post('/documents/thesis', {
           id: uuid(),
           type: documentType,
           title: title,
@@ -82,25 +70,41 @@ class InternalDocuments extends Component {
           author: author,
           supervisor: supervisor,
           addedAt: moment()
-        }
-      )
-      this.setState({
-        dialogOpen: false, 
-        title: '',
-        author: '',
-        supervisor: '',
-        documentType: '',
-        contains: [],
       })
+      .then(
+        this.setState({
+          dialogOpen: false, 
+          title: '',
+          author: '',
+          supervisor: '',
+          documentType: '',
+          contains: [],
+        }))
+      .then(window.location.reload())
     }
   }
+
+  handleDeleteRecord = () => {
+    let recordsId = [...this.state.selectedRecords]
+    
+    recordsId.map(record  => {
+      axios.delete(`/documents/thesis/${record}`)
+        .then(window.location.reload())
+    })
+  }
+
+  handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <UsersToolbar clicked={this.handleAddItem} />
+        <ThesisToolbar 
+          clicked={this.handleAddItem}
+          deleterecord={this.handleDeleteRecord} />
         <div style={{marginTop: theme.spacing(2)}}>
-          <UsersTable documentsData={this.state.documentsData} />
+          <ThesisTable 
+            documentsData={this.state.documentsData}
+            findSelected={(records) => this.handleFindRecordId(records)} />
         </div>
         <DialogWindow
           author={this.state.author}
@@ -123,4 +127,4 @@ class InternalDocuments extends Component {
   }
 }
 
-export default InternalDocuments;
+export default ThesisDocuments;

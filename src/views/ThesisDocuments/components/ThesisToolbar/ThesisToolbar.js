@@ -28,8 +28,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UsersToolbar = props => {
-  const { className, ...rest } = props;
+const ThesisToolbar = props => {
+  const { className, clicked, ...rest } = props;
 
   const classes = useStyles();
 
@@ -40,27 +40,37 @@ const UsersToolbar = props => {
     >
       <div className={classes.row}>
         <span className={classes.spacer} />
-        <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button>
+        {/* <Button className={classes.importButton}>Import</Button>
+        <Button className={classes.exportButton}>Export</Button> */}
         <Button
           color="primary"
+          onClick={clicked}
           variant="contained"
         >
-          Add user
+          Dodaj dokument
+        </Button>
+        <Button
+          color="primary"
+          onClick={props.deleterecord}
+          variant="contained"
+        >
+          Usuń dokument
         </Button>
       </div>
       <div className={classes.row}>
         <SearchInput
           className={classes.searchInput}
-          placeholder="Search user"
+          placeholder="Znajdź"
         />
       </div>
     </div>
   );
 };
 
-UsersToolbar.propTypes = {
-  className: PropTypes.string
+ThesisToolbar.propTypes = {
+  className: PropTypes.string,
+  clicked: PropTypes.func,
+  deleterecord: PropTypes.func
 };
 
-export default UsersToolbar;
+export default ThesisToolbar;
