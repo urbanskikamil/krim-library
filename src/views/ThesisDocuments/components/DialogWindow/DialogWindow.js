@@ -9,6 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import InputField from './components/inputField'
 import TypeField from './components/TypeField'
@@ -28,6 +29,13 @@ const useStyles = makeStyles(theme => ({
   formControlLabel: {
     marginTop: theme.spacing(1),
   },
+  circularProgress: {
+    width: '338px',
+    height: '158px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 }));
 
 const DialogWindow = (props) => {
@@ -39,43 +47,50 @@ const DialogWindow = (props) => {
       onClose={props.closed} 
       open={props.dialogStatus} 
     >
-      <DialogTitle id="form-dialog-title">Dodaj plik</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-           Aby dodać plik proszę wypełnić ponizszy formularz 
-           i kliknąć przycisk "Dodaj"
-        </DialogContentText>
-        <InputField 
-          author={props.author}
-          authorChange={props.authorChange}
-          supervisor={props.supervisor}
-          supervisorChange={props.supervisorChange} 
-          title={props.title}
-          titleChange={props.titleChange}
-        />
-        <TypeField
-          classes={classes}
-          documentType={props.documentType}
-          typeChange={props.typeChange} 
-        />
-        <ContainField
-          classes={classes}
-          contains={props.contains}
-          containsChange={props.containsChange} 
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button 
-          color="primary"
-          onClick={props.closed} 
-        >Zamknij
-        </Button>
-        <Button 
-          color="primary"          
-          onClick={props.submited}
-        >Dodaj
-        </Button>
-      </DialogActions>
+    {props.loading ? 
+      <div className={classes.circularProgress}>
+        <CircularProgress size={60}/>
+      </div> 
+      : <React.Fragment>
+          <DialogTitle id="form-dialog-title">Dodaj plik</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Aby dodać plik proszę wypełnić ponizszy formularz 
+              i kliknąć przycisk "Dodaj"
+            </DialogContentText>
+            <InputField 
+              author={props.author}
+              authorChange={props.authorChange}
+              supervisor={props.supervisor}
+              supervisorChange={props.supervisorChange} 
+              title={props.title}
+              titleChange={props.titleChange}
+            />
+            <TypeField
+              classes={classes}
+              documentType={props.documentType}
+              typeChange={props.typeChange} 
+            />
+            <ContainField
+              classes={classes}
+              contains={props.contains}
+              containsChange={props.containsChange} 
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button 
+              color="primary"
+              onClick={props.closed} 
+            >Zamknij
+            </Button>
+            <Button 
+              color="primary"          
+              onClick={props.submited}
+            >Dodaj
+            </Button>
+          </DialogActions>
+        </React.Fragment>
+    }
     </Dialog>
   )
 } 

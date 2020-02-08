@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Button } from '@material-ui/core';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { makeStyles } from '@material-ui/core/styles';
+
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
@@ -8,6 +12,11 @@ import theme from '../../theme/index'
 import axios from '../../axios-orders'
 
 import DialogWindow from './components/DialogWindow/DialogWindow'
+import DeleteDialog from './components/DeleteDialog/DeleteDialog'
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 class ThesisDocuments extends Component {
   state = {
@@ -19,14 +28,27 @@ class ThesisDocuments extends Component {
     documentType: '',
     contains: [],
     date: '',
-    selectedRecords: []
+    selectedRecords: [],
+    deleteDialogOpen: false,
+    snackBarAlertSuccess: false,
+    severity: '',
+    alertContent: '',
+    loading: false
+  }
+  
+  refreshData = () => {
+    axios.get('/documents/thesis')
+    .then(response => {
+       this.setState({documentsData: response.data})
+    }).then(console.log('Data refreshed'))
   }
 
   componentDidMount () {
-    axios.get('/documents/thesis')
-      .then( async response => {
-        await this.setState({documentsData: response.data})
-      })
+    this.refreshData();
+  }
+
+  componentDidUpdate () {
+    console.log('did update')
   }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
@@ -56,12 +78,19 @@ class ThesisDocuments extends Component {
     copiedContains = event.target.value;
     this.setState({contains: copiedContains})
   }
+
   handleSubmit = () => {
     const { documentType, title, contains, author, supervisor } = this.state
 
     if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
-      alert('Proszę wypełnić wszystkie pola')
+      this.setState({
+        alertContent: 'Proszę wypełnić wszystkie pola',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
     else{
+      this.setState({loading: true})
+
       axios.post('/documents/thesis', {
           id: uuid(),
           type: documentType,
@@ -71,40 +100,100 @@ class ThesisDocuments extends Component {
           supervisor: supervisor,
           addedAt: moment()
       })
-      .then(
-        this.setState({
-          dialogOpen: false, 
-          title: '',
-          author: '',
-          supervisor: '',
-          documentType: '',
-          contains: [],
-        }))
-      .then(window.location.reload())
+      .then(response => {
+          console.log(response)
+          setTimeout(() => this.setState({
+            dialogOpen: false,
+            loading: false,
+            title: '',
+            author: '',
+            supervisor: '',
+            documentType: '',
+            contains: [],
+          }), 2000)
+          if (response.status < 200 || response.status > 299) {
+            setTimeout(() => this.setState({
+              alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
+              severity: 'error', 
+              snackBarAlertSuccess: true
+            }), 2000)
+          }
+          else {
+            setTimeout(() => this.setState({
+              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+              severity: 'success', 
+              snackBarAlertSuccess: true
+            }), 2000)         
+          }
+        }
+      )
+      setTimeout(() => this.refreshData(), 1000)
     }
   }
 
   handleDeleteRecord = () => {
-    let recordsId = [...this.state.selectedRecords]
-    
-    recordsId.map(record  => {
-      axios.delete(`/documents/thesis/${record}`)
-        .then(window.location.reload())
+    let recordsId = [...this.state.selectedRecords] 
+    this.setState({loading: true})
+
+    recordsId.map(async record => {
+      await axios.delete(`/documents/thesis/${record}`)
+        .then(response => {
+          console.log(response)
+          if (response.status < 200 || response.status > 299) {
+            this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Wystąpił błąd podczas próby usunięcia dokumentu. Proszę spróbować jeszcze raz',
+              severity: 'error',
+              snackBarAlertSuccess: true
+            })   
+          }    
+        })
     })
+
+    setTimeout(() => this.setState({
+      deleteDialogOpen: false,
+      loading: false,
+      alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
+      severity: 'success',
+      snackBarAlertSuccess: true
+    }), 2000)
+
+    setTimeout(() => this.refreshData(), 1000)
   }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
+
+  handleDeleteDialogOpen = () => {
+    console.log(this.state.selectedRecords)
+    if(this.state.selectedRecords.length === 0) 
+      this.setState({
+        alertContent: 'Proszę wybrać dokument do usunięcia',
+        severity: 'warning', 
+        snackBarAlertSuccess: true        
+      })
+    else this.setState({deleteDialogOpen: true})
+  }
+
+  handleDeleteDialogClose = () => {this.setState({deleteDialogOpen: false})}
+
+  handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({snackBarAlertSuccess: false})}
 
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
         <ThesisToolbar 
           clicked={this.handleAddItem}
-          deleterecord={this.handleDeleteRecord} />
+          deleteDialogOpen={this.handleDeleteDialogOpen} />
         <div style={{marginTop: theme.spacing(2)}}>
           <ThesisTable 
             documentsData={this.state.documentsData}
-            findSelected={(records) => this.handleFindRecordId(records)} />
+            findSelected={(records) => this.handleFindRecordId(records)} 
+          />
         </div>
         <DialogWindow
           author={this.state.author}
@@ -121,7 +210,25 @@ class ThesisDocuments extends Component {
           title={this.state.title}
           titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
+          loading={this.state.loading}
         />
+        <DeleteDialog 
+          closed={this.handleDeleteDialogClose}
+          dialogStatus={this.state.deleteDialogOpen}
+          accepted={this.handleDeleteRecord}
+          cancelled={this.handleDeleteDialogClose}
+          loading={this.state.loading}
+        />
+        <Snackbar 
+          open={this.state.snackBarAlertSuccess} 
+          autoHideDuration={6000} 
+          onClose={this.handleAlertClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={this.handleAlertClose} severity={this.state.severity}>
+            {this.state.alertContent}
+          </Alert>
+        </Snackbar>
       </div>
     );
   }

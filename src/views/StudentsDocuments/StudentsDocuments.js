@@ -52,7 +52,7 @@ class StudentsDocuments extends Component {
     const { documentType, title, contains, author, supervisor } = this.state
     const clonedDocumentsData = [...this.state.documentsData]
 
-    if (title == '' || author == '' || supervisor == '' || documentType == '' || contains == []) 
+    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
       alert('Prosze wypełnić wszystkie pola')
     else{
       clonedDocumentsData.push({
