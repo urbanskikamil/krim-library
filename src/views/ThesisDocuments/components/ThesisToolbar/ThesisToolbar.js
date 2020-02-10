@@ -8,30 +8,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import { SearchInput } from 'components';
 
-const useStyles = makeStyles(theme => ({
-  row: {
-    height: '42px',
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: theme.spacing(1)
-  },
-  spacer: {
-    flexGrow: 1
-  },
-  importButton: {
-    marginRight: theme.spacing(1)
-  },
-  exportButton: {
-    marginRight: theme.spacing(1)
-  },
-  searchInput: {
-    marginRight: theme.spacing(1)
-  },
-  toolbarButton: {
-    marginLeft: theme.spacing(1)
-  }
-}));
-
 const ThesisToolbar = props => {
   const { className, clicked, deleteDialogOpen, ...rest } = props;
 
@@ -74,6 +50,31 @@ const ThesisToolbar = props => {
 ThesisToolbar.propTypes = {
   className: PropTypes.string,
   clicked: PropTypes.func,
+  deleteDialogOpen: PropTypes.func,
 };
+
+const useStyles = makeStyles(theme => ({
+  row: {
+    height: '42px',
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: theme.spacing(1)
+  },
+  spacer: {
+    flexGrow: 1
+  },
+  importButton: {
+    marginRight: theme.spacing(1)
+  },
+  exportButton: {
+    marginRight: theme.spacing(1)
+  },
+  searchInput: {
+    marginRight: theme.spacing(1)
+  },
+  toolbarButton: {
+    marginLeft: theme.spacing(1)
+  }
+}));
 
 export default ThesisToolbar;

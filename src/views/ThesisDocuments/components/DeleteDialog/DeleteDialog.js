@@ -9,6 +9,43 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+const DeleteDialog = (props) => {
+  const classes = useStyles();
+  const { closed, dialogStatus, accepted, cancelled, loading } = props
+
+  console.log(loading)
+  return(
+    <Dialog
+      aria-labelledby="form-dialog-title"
+      className={classes.dialog} 
+      onClose={closed} 
+      open={dialogStatus} 
+    >
+      {loading ? 
+        <div className={classes.circularProgress}>
+          <CircularProgress size={60}/>
+        </div>
+        : <React.Fragment>
+          <DialogTitle id="form-dialog-title">Usunąć pliki?</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Czy napewno chcesz usunąć zaznaczone pliki?<br/>
+              Operacji tej nie będzie mozna cofnąć
+            </DialogContentText>
+            <div className={classes.flexContainer}>
+              <Button 
+                color="primary" 
+                onClick={accepted}>TAK</Button>
+              <Button 
+                color="primary" 
+                onClick={cancelled}>NIE</Button>
+            </div>
+          </DialogContent>
+        </React.Fragment>
+      }
+    </Dialog> 
+  )
+} 
 
 const useStyles = makeStyles(theme => ({
   flexContainer: {
@@ -24,45 +61,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DeleteDialog = (props) => {
-  const classes = useStyles();
-  const { closed, dialogStatus, accepted, cancelled, alertSuccess, loading } = props
-
-  console.log(loading)
-  return(
-      <Dialog
-        className={classes.dialog} 
-        aria-labelledby="form-dialog-title"
-        onClose={closed} 
-        open={dialogStatus} 
-      >
-      {loading ? 
-        <div className={classes.circularProgress}>
-          <CircularProgress size={60}/>
-        </div>
-        : <React.Fragment>
-            <DialogTitle id="form-dialog-title">Usunąć pliki?</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Czy napewno chcesz usunąć zaznaczone pliki?<br/>
-                Operacji tej nie będzie mozna cofnąć
-              </DialogContentText>
-              <div className={classes.flexContainer}>
-                <Button color="primary" onClick={accepted}>TAK</Button>
-                <Button color="primary" onClick={cancelled}>NIE</Button>
-              </div>
-          </DialogContent>
-        </React.Fragment>
-      }
-      </Dialog> 
-  )
-} 
-
 DeleteDialog.propTypes = {
   closed: PropTypes.func,
   dialogStatus: PropTypes.bool,
   accepted: PropTypes.func,
-  cancelled: PropTypes.func
+  cancelled: PropTypes.func,
+  loading: PropTypes.bool
 };
 
 

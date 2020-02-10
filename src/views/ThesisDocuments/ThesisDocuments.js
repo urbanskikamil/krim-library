@@ -1,8 +1,6 @@
+/* eslint-disable react/jsx-sort-props */
 import React, { Component } from 'react';
-import { Button } from '@material-ui/core';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
 
 import uuid from 'uuid/v1';
 import moment from 'moment';
@@ -10,13 +8,10 @@ import moment from 'moment';
 import { ThesisToolbar, ThesisTable } from './components';
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
+import Alert from '../../UI/Alert/Alert'
 
 import DialogWindow from './components/DialogWindow/DialogWindow'
 import DeleteDialog from './components/DeleteDialog/DeleteDialog'
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 class ThesisDocuments extends Component {
   state = {
@@ -38,9 +33,9 @@ class ThesisDocuments extends Component {
   
   refreshData = () => {
     axios.get('/documents/thesis')
-    .then(response => {
-       this.setState({documentsData: response.data})
-    }).then(console.log('Data refreshed'))
+      .then(response => {
+        this.setState({documentsData: response.data})
+      }).then(console.log('Data refreshed'))
   }
 
   componentDidMount () {
@@ -92,15 +87,15 @@ class ThesisDocuments extends Component {
       this.setState({loading: true})
 
       axios.post('/documents/thesis', {
-          id: uuid(),
-          type: documentType,
-          title: title,
-          field: contains.join(', '),
-          author: author,
-          supervisor: supervisor,
-          addedAt: moment()
+        id: uuid(),
+        type: documentType,
+        title: title,
+        field: contains.join(', '),
+        author: author,
+        supervisor: supervisor,
+        addedAt: moment()
       })
-      .then(response => {
+        .then(response => {
           console.log(response)
           setTimeout(() => this.setState({
             dialogOpen: false,
@@ -118,15 +113,30 @@ class ThesisDocuments extends Component {
               snackBarAlertSuccess: true
             }), 2000)
           }
-          else {
-            setTimeout(() => this.setState({
-              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
-              severity: 'success', 
+          // else {
+          //   setTimeout(() => this.setState({
+          //     alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+          //     severity: 'success', 
+          //     snackBarAlertSuccess: true
+          //   }), 2000)         
+          // }
+        })
+        .catch((err) => {
+          if(err.message === 'Network Error') {
+            this.setState({
+              dialogOpen: false,
+              loading: false,
+              title: '',
+              author: '',
+              supervisor: '',
+              documentType: '',
+              contains: [],
+              alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
+              severity: 'error', 
               snackBarAlertSuccess: true
-            }), 2000)         
-          }
-        }
-      )
+            })   
+          } 
+        })
       setTimeout(() => this.refreshData(), 1000)
     }
   }
