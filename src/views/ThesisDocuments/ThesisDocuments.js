@@ -28,7 +28,9 @@ class ThesisDocuments extends Component {
     snackBarAlertSuccess: false,
     severity: '',
     alertContent: '',
-    loading: false
+    loading: false,
+    file: null,
+    fileName: null
   }
   
   refreshData = () => {
@@ -74,7 +76,17 @@ class ThesisDocuments extends Component {
     this.setState({contains: copiedContains})
   }
 
+  // onFileChange = e => {
+  //   this.setState({ 
+  //     file: e.target.files[0], 
+  //     fileName: e.target.files[0].name});
+  // };
+
   handleSubmit = () => {
+    // e.preventDefault();
+    // const formData = new FormData();
+    // formData.append('file', this.state.file);
+
     const { documentType, title, contains, author, supervisor } = this.state
 
     if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
@@ -85,6 +97,22 @@ class ThesisDocuments extends Component {
       })
     else{
       this.setState({loading: true})
+      // 
+      // var postData = {
+      //   sampleFile: req.files.sampleFile,
+      //   fileName: req.files.sampleFile.name
+      // };
+
+      // try {
+      //   axios.post('/documents/thesis/upload', postData, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data'
+      //     }
+      //   })
+      // }
+      // catch (err) {
+      //   console.log(err.message)
+      // }
 
       axios.post('/documents/thesis', {
         id: uuid(),
@@ -113,13 +141,13 @@ class ThesisDocuments extends Component {
               snackBarAlertSuccess: true
             }), 2000)
           }
-          // else {
-          //   setTimeout(() => this.setState({
-          //     alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
-          //     severity: 'success', 
-          //     snackBarAlertSuccess: true
-          //   }), 2000)         
-          // }
+          else {
+            setTimeout(() => this.setState({
+              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+              severity: 'success', 
+              snackBarAlertSuccess: true
+            }), 2000)         
+          }
         })
         .catch((err) => {
           if(err.message === 'Network Error') {
@@ -198,8 +226,9 @@ class ThesisDocuments extends Component {
       <div style={{padding: theme.spacing(3)}}>
         <ThesisToolbar 
           clicked={this.handleAddItem}
-          deleteDialogOpen={this.handleDeleteDialogOpen} />
-        <div style={{marginTop: theme.spacing(2)}}>
+          deleteDialogOpen={this.handleDeleteDialogOpen}
+        />
+        <div style={{marginTop: theme.spacing(2)}}>          
           <ThesisTable 
             documentsData={this.state.documentsData}
             findSelected={(records) => this.handleFindRecordId(records)} 
@@ -221,6 +250,7 @@ class ThesisDocuments extends Component {
           titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
+          onFileChange={this.onFileChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

@@ -76,9 +76,19 @@ const DialogWindow = (props) => {
               contains={props.contains}
               containsChange={props.containsChange} 
             />
+            <form 
+              id='uploadForm' 
+              action='http://localhost:8080/documents/thesis/upload' 
+              method='post' 
+              encType="multipart/form-data"
+              //onSubmit={props.submited}
+            >
+                <input type="file" name="sampleFile" />
+                <input type='submit' value='Upload!' onClick={props.submited} />
+            </form> 
           </DialogContent>
           <DialogActions>
-            <Button 
+            <Button
               color="primary"
               onClick={props.closed} 
             >Zamknij
