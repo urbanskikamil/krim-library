@@ -29,15 +29,14 @@ class ThesisDocuments extends Component {
     severity: '',
     alertContent: '',
     loading: false,
-    file: null,
-    fileName: null
+    file: '',
   }
   
   refreshData = () => {
     axios.get('/documents/thesis')
-      .then(response => {
-        this.setState({documentsData: response.data})
-      }).then(console.log('Data refreshed'))
+    .then(response => {
+      this.setState({documentsData: response.data})
+    }).then(console.log('Data refreshed'))
   }
 
   componentDidMount () {
@@ -46,6 +45,7 @@ class ThesisDocuments extends Component {
 
   componentDidUpdate () {
     console.log('did update')
+    console.log('docData', this.state.documentsData)
   }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
@@ -59,7 +59,8 @@ class ThesisDocuments extends Component {
       author: '',
       supervisor: '',
       documentType: '',
-      contains: []
+      contains: [],
+      file: ''
     })
   }
   handleTypeChange = (event) => {this.setState({documentType: event.target.value})}
@@ -76,82 +77,34 @@ class ThesisDocuments extends Component {
     this.setState({contains: copiedContains})
   }
 
-  // onFileChange = e => {
-  //   this.setState({ 
-  //     file: e.target.files[0], 
-  //     fileName: e.target.files[0].name});
-  // };
+  handleSubmit = (event) => {
 
-  handleSubmit = () => {
-    // e.preventDefault();
-    // const formData = new FormData();
-    // formData.append('file', this.state.file);
+    this.uploadFiles()
+    
+    const { documentType, title, contains, author, supervisor, file } = this.state
 
-    const { documentType, title, contains, author, supervisor } = this.state
-
-    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === []) 
-      this.setState({
-        alertContent: 'Proszę wypełnić wszystkie pola',
-        severity: 'warning', 
-        snackBarAlertSuccess: true
-      })
-    else{
-      this.setState({loading: true})
-      // 
-      // var postData = {
-      //   sampleFile: req.files.sampleFile,
-      //   fileName: req.files.sampleFile.name
-      // };
-
-      // try {
-      //   axios.post('/documents/thesis/upload', postData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data'
-      //     }
-      //   })
-      // }
-      // catch (err) {
-      //   console.log(err.message)
-      // }
-
-      axios.post('/documents/thesis', {
-        id: uuid(),
-        type: documentType,
-        title: title,
-        field: contains.join(', '),
-        author: author,
-        supervisor: supervisor,
-        addedAt: moment()
-      })
-        .then(response => {
-          console.log(response)
-          setTimeout(() => this.setState({
-            dialogOpen: false,
-            loading: false,
-            title: '',
-            author: '',
-            supervisor: '',
-            documentType: '',
-            contains: [],
-          }), 2000)
-          if (response.status < 200 || response.status > 299) {
-            setTimeout(() => this.setState({
-              alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
-              severity: 'error', 
-              snackBarAlertSuccess: true
-            }), 2000)
-          }
-          else {
-            setTimeout(() => this.setState({
-              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
-              severity: 'success', 
-              snackBarAlertSuccess: true
-            }), 2000)         
-          }
+      if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
+        this.setState({
+          alertContent: 'Proszę wypełnić wszystkie pola',
+          severity: 'warning', 
+          snackBarAlertSuccess: true
         })
-        .catch((err) => {
-          if(err.message === 'Network Error') {
-            this.setState({
+      else{
+        this.setState({loading: true})
+  
+        axios.post('/documents/thesis', {
+          id: uuid(),
+          type: documentType,
+          title: title,
+          field: contains.join(', '),
+          author: author,
+          supervisor: supervisor,
+          addedAt: moment(),
+          file: file.name
+        })
+          .then(response => {
+            console.log(response)
+            setTimeout(() => this.setState({
               dialogOpen: false,
               loading: false,
               title: '',
@@ -159,14 +112,42 @@ class ThesisDocuments extends Component {
               supervisor: '',
               documentType: '',
               contains: [],
-              alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
-              severity: 'error', 
-              snackBarAlertSuccess: true
-            })   
-          } 
-        })
-      setTimeout(() => this.refreshData(), 1000)
-    }
+              file: ''
+            }), 2000)
+            if (response.status < 200 || response.status > 299) {
+              setTimeout(() => this.setState({
+                alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
+                severity: 'error', 
+                snackBarAlertSuccess: true
+              }), 2000)
+            }
+            else {
+              setTimeout(() => this.setState({
+                alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+                severity: 'success', 
+                snackBarAlertSuccess: true
+              }), 2000)         
+            }
+          })
+          .catch((err) => {
+            if(err.message === 'Network Error') {
+              this.setState({
+                dialogOpen: false,
+                loading: false,
+                title: '',
+                author: '',
+                supervisor: '',
+                documentType: '',
+                contains: [],
+                file: '',
+                alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
+                severity: 'error', 
+                snackBarAlertSuccess: true
+              })   
+            } 
+          })
+        setTimeout(() => this.refreshData(), 1000)
+      }
   }
 
   handleDeleteRecord = () => {
@@ -200,6 +181,15 @@ class ThesisDocuments extends Component {
     setTimeout(() => this.refreshData(), 1000)
   }
 
+  handleFileDownload = (file) => {
+    console.log(file)
+    axios.get('/documents/thesis/download')
+      .then(response => {
+        console.log(response, 'Weszlo')
+        window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank');
+      })
+  }
+
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
   handleDeleteDialogOpen = () => {
@@ -221,6 +211,21 @@ class ThesisDocuments extends Component {
     }
     this.setState({snackBarAlertSuccess: false})}
 
+  handleFile = (fileName, id) => {
+    this.setState({ [id]: fileName });
+    console.log(this.state[id])
+  }
+
+  uploadFiles = () => {
+    const data = new FormData();
+    data.append('file', this.state.file);
+
+    axios.put('/documents/thesis/upload/', data)
+    .then(response => console.log(response))
+    //.then(clearTimeout(timeout))
+    .catch(err => console.log(err))
+  };
+
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
@@ -231,7 +236,8 @@ class ThesisDocuments extends Component {
         <div style={{marginTop: theme.spacing(2)}}>          
           <ThesisTable 
             documentsData={this.state.documentsData}
-            findSelected={(records) => this.handleFindRecordId(records)} 
+            findSelected={(records) => this.handleFindRecordId(records)}
+            fileDownload={this.handleFileDownload} 
           />
         </div>
         <DialogWindow
@@ -239,18 +245,19 @@ class ThesisDocuments extends Component {
           authorChange={this.handleAuthorChange}
           closed={this.handleDialogClose}
           contains={this.state.contains}
-          containsChange={(event) => this.handleContainsChange(event)}
+          containsChange={this.handleContainsChange}
           dialogStatus={this.state.dialogOpen}
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
-          submited={this.handleSubmit}
+          submited={(event) => this.handleSubmit(event)}
           supervisor={this.state.supervisor}
           supervisorChange={this.handleSupervisorChange}
           title={this.state.title}
           titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
-          onFileChange={this.onFileChange}
+          chosed={event => this.handleFileChosed(event)}
+          handleFile={this.handleFile}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

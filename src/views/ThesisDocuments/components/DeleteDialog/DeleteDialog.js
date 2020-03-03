@@ -13,7 +13,6 @@ const DeleteDialog = (props) => {
   const classes = useStyles();
   const { closed, dialogStatus, accepted, cancelled, loading } = props
 
-  console.log(loading)
   return(
     <Dialog
       aria-labelledby="form-dialog-title"

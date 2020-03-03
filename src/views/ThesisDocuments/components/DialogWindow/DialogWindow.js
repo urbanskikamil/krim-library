@@ -2,41 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-// import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Dialog, Button, FormControl, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@material-ui/core'
 
 import InputField from './components/inputField'
 import TypeField from './components/TypeField'
 import ContainField from './components/ContainField'
-
-const useStyles = makeStyles(theme => ({
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: 'fit-content',
-  },
-  formControl: {
-    marginTop: theme.spacing(2),
-    minWidth: 120,
-    width: '170px'
-  },
-  formControlLabel: {
-    marginTop: theme.spacing(1),
-  },
-  circularProgress: {
-    width: '338px',
-    height: '158px',
-    display: 'flex', 
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-}));
 
 const DialogWindow = (props) => {
   const classes = useStyles();
@@ -76,34 +46,58 @@ const DialogWindow = (props) => {
               contains={props.contains}
               containsChange={props.containsChange} 
             />
-            <form 
-              id='uploadForm' 
-              action='http://localhost:8080/documents/thesis/upload' 
-              method='post' 
-              encType="multipart/form-data"
-              //onSubmit={props.submited}
-            >
-                <input type="file" name="sampleFile" />
-                <input type='submit' value='Upload!' onClick={props.submited} />
-            </form> 
           </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              onClick={props.closed} 
-            >Zamknij
-            </Button>
+          <FormControl>
+            <input
+              className={classes.input}
+              accept=".pdf,.doc,.docx,.jpg,.jpeg"
+              id="file"
+              name="file"
+              type="file"
+              onChange={e => props.handleFile(e.target.files[0],"file")}
+            />
             <Button 
               color="primary"          
               onClick={props.submited}
             >Dodaj
             </Button>
-          </DialogActions>
+            <Button
+              color="primary"
+              onClick={props.closed} 
+            >Zamknij
+            </Button>
+            </FormControl>
         </React.Fragment>
     }
     </Dialog>
   )
 } 
+
+const useStyles = makeStyles(theme => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: 'fit-content',
+  },
+  formControl: {
+    marginTop: theme.spacing(2),
+    minWidth: 120,
+    width: '170px'
+  },
+  formControlLabel: {
+    marginTop: theme.spacing(1),
+  },
+  circularProgress: {
+    width: '338px',
+    height: '158px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  input: {
+    margin: '20px'
+  },
+}));
 
 DialogWindow.propTypes = {
   author: PropTypes.string,

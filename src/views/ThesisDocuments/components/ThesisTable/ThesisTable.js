@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ThesisTable = props => {
-  const { className, documentsData, ...rest } = props;
+  const { className, documentsData, fileDownload, findSelected, ...rest } = props;
 
   const classes = useStyles();
 
@@ -81,7 +81,7 @@ const ThesisTable = props => {
     }
     setSelectedUsers(newSelectedUsers);
     console.log(newSelectedUsers)
-    props.findSelected(newSelectedUsers)
+    findSelected(newSelectedUsers)
   };
 
   const handlePageChange = (event, page) => {
@@ -152,7 +152,7 @@ const ThesisTable = props => {
                       {moment(doc.addedAt).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      <GetAppIcon/>                    
+                      <GetAppIcon onClick={() => fileDownload(doc.file)} style={{cursor: 'pointer'}}/>                    
                     </TableCell>                   
                   </TableRow>
                 ))}
@@ -179,7 +179,8 @@ const ThesisTable = props => {
 ThesisTable.propTypes = {
   className: PropTypes.string,
   documentsData: PropTypes.array.isRequired,
-  findSelected: PropTypes.func
+  findSelected: PropTypes.func,
+  fileDownload: PropTypes.func
 };
 
 export default ThesisTable;
