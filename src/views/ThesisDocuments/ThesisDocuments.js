@@ -16,6 +16,7 @@ import DeleteDialog from './components/DeleteDialog/DeleteDialog'
 class ThesisDocuments extends Component {
   state = {
     documentsData: [],
+    filteredData: [],
     dialogOpen: false,
     title: '',
     author: '',
@@ -30,6 +31,8 @@ class ThesisDocuments extends Component {
     alertContent: '',
     loading: false,
     file: '',
+    category: '',
+    searchInputValue: '',
   }
   
   refreshData = () => {
@@ -155,7 +158,8 @@ class ThesisDocuments extends Component {
     this.setState({loading: true})
 
     recordsId.map(async record => {
-      await axios.delete(`/documents/thesis/${record}`)
+      await axios.get(`/documents/thesis/${record}`)
+      axios.delete(`/documents/thesis/${record}`)
         .then(response => {
           console.log(response)
           if (response.status < 200 || response.status > 299) {
@@ -181,13 +185,12 @@ class ThesisDocuments extends Component {
     setTimeout(() => this.refreshData(), 1000)
   }
 
-  handleFileDownload = (file) => {
-    console.log(file)
-    axios.get('/documents/thesis/download')
-      .then(response => {
-        console.log(response, 'Weszlo')
-        window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank');
-      })
+  handleFileDownload = (file) => { 
+    window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank');
+    // axios.get('/documents/thesis/download')
+    //   .then(response => {
+    //     console.log(response, 'Weszlo')
+      // })
   }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
@@ -203,7 +206,7 @@ class ThesisDocuments extends Component {
     else this.setState({deleteDialogOpen: true})
   }
 
-  handleDeleteDialogClose = () => {this.setState({deleteDialogOpen: false})}
+  handleDeleteDialogClose = () => { this.setState({deleteDialogOpen: false}) }
 
   handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -226,16 +229,64 @@ class ThesisDocuments extends Component {
     .catch(err => console.log(err))
   };
 
+  handleCategoryChange = (event) => { this.setState({category: event.target.value}) }
+
+  handleSearch = () => {
+    if (this.state.searchInputValue === '' && this.state.category === '') {
+      this.setState({
+        filteredData: [],
+        alertContent: 'Proszę wpisać frazę do wyszukania oraz wybrać kategorię',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
+      return
+    } 
+    if (this.state.category === '') {    
+      this.setState({
+        alertContent: 'Proszę wybrać kategorię wyszukiwania',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
+      return
+    }
+    if (this.state.searchInputValue === '') {    
+      this.setState({
+        alertContent: 'Proszę wpisać frazę do wyszukania',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
+      return
+    }
+
+    const copiedData = [...this.state.documentsData]
+    const newData = []
+
+    copiedData.map(record => {
+      const chosenCategory = record[this.state.category].toLowerCase()
+      const searchValue = this.state.searchInputValue.toLowerCase()
+
+      if (chosenCategory.includes(searchValue)) newData.push(record)
+    })
+    this.setState({filteredData: newData})
+  }
+
+  handleInputChange = (event) => { this.setState({searchInputValue: event.target.value}) }
+
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
         <ThesisToolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
+          category={this.state.category}
+          handleCategory={this.handleCategoryChange}
+          handleSearch={this.handleSearch}
+          handleInput={this.handleInputChange}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
           <ThesisTable 
-            documentsData={this.state.documentsData}
+            documentsData={this.state.filteredData.length < 1 ? this.state.documentsData 
+              : this.state.filteredData}
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload} 
           />

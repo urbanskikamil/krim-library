@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { Delete, CloudUpload } from '@material-ui/icons';
 
 import { SearchInput } from 'components';
 
 const ThesisToolbar = props => {
-  const { className, clicked, deleteDialogOpen, ...rest } = props;
-
+  const { className, clicked, deleteDialogOpen, category, handleCategory, handleSearch, handleInput, ...rest } = props;
   const classes = useStyles();
 
   return (
@@ -22,6 +21,10 @@ const ThesisToolbar = props => {
         <SearchInput
           className={classes.searchInput}
           placeholder="Znajdź"
+          category={category}
+          handleCategory={handleCategory}
+          handleSearch={handleSearch}
+          handleInput={handleInput}
         />
         <span className={classes.spacer} />
         {/* <Button className={classes.importButton}>Import</Button>
@@ -30,7 +33,7 @@ const ThesisToolbar = props => {
           color="secondary"
           onClick={clicked}
           variant="contained"
-          startIcon={<CloudUploadIcon />}
+          startIcon={<CloudUpload />}
         >
           Dodaj dokument
         </Button>
@@ -38,7 +41,7 @@ const ThesisToolbar = props => {
           className={classes.toolbarButton}
           onClick={deleteDialogOpen}
           variant="contained"
-          startIcon={<DeleteIcon />}
+          startIcon={<Delete />}
         >
           Usuń dokument
         </Button>
@@ -51,26 +54,22 @@ ThesisToolbar.propTypes = {
   className: PropTypes.string,
   clicked: PropTypes.func,
   deleteDialogOpen: PropTypes.func,
+  handleCategory: PropTypes.func,
 };
 
 const useStyles = makeStyles(theme => ({
   row: {
     height: '42px',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: theme.spacing(1)
   },
   spacer: {
     flexGrow: 1
   },
-  importButton: {
-    marginRight: theme.spacing(1)
-  },
-  exportButton: {
-    marginRight: theme.spacing(1)
-  },
   searchInput: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    maxWidth: '250px'
   },
   toolbarButton: {
     marginLeft: theme.spacing(1)
