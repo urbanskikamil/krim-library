@@ -8,7 +8,7 @@ import { Button, Paper, Input, InputLabel, MenuItem, FormControl, Select } from 
 
 const categories = [
   {label: 'Typ', key: 'type'},
-  {label: 'Tytuł', key: 'title'},
+  {label: 'Nazwa', key: 'title'},
   {label: 'Dotyczy', key: 'field'},
   {label: 'Autor', key: 'author'},
   {label: 'Promotor', key: 'Supervisor'},

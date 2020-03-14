@@ -7,9 +7,10 @@ import { Button } from '@material-ui/core';
 import { Delete, CloudUpload } from '@material-ui/icons';
 
 import { SearchInput } from 'components';
+import FilterConditions from './components/FilterConditions'
 
 const ThesisToolbar = props => {
-  const { className, clicked, deleteDialogOpen, category, handleCategory, handleSearch, handleInput, ...rest } = props;
+  const { className, clicked, deleteDialogOpen, category, filtered, filterRequests, inputValue, handleCategory, handleSearch, handleInput, handleDeleteFilter, ...rest } = props;
   const classes = useStyles();
 
   return (
@@ -46,6 +47,10 @@ const ThesisToolbar = props => {
           Usuń dokument
         </Button>
       </div>
+      { filtered ?
+        <FilterConditions category={category} inputValue={inputValue} filterRequests={filterRequests} handleDeleteFilter={handleDeleteFilter} />
+        : null
+      }
     </div>
   );
 };

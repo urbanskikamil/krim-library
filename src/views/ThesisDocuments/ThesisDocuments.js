@@ -33,6 +33,8 @@ class ThesisDocuments extends Component {
     file: '',
     category: '',
     searchInputValue: '',
+    filtered: false,
+    filterRequests: [],
   }
   
   refreshData = () => {
@@ -47,8 +49,8 @@ class ThesisDocuments extends Component {
   }
 
   componentDidUpdate () {
-    console.log('did update')
-    console.log('docData', this.state.documentsData)
+    //console.log('did update')
+    //console.log('docData', this.state.documentsData)
   }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
@@ -232,6 +234,8 @@ class ThesisDocuments extends Component {
   handleCategoryChange = (event) => { this.setState({category: event.target.value}) }
 
   handleSearch = () => {
+    this.refreshData();
+
     if (this.state.searchInputValue === '' && this.state.category === '') {
       this.setState({
         filteredData: [],
@@ -258,19 +262,56 @@ class ThesisDocuments extends Component {
       return
     }
 
-    const copiedData = [...this.state.documentsData]
-    const newData = []
+    let copiedData = []
+    if (this.state.filteredData.length < 1) copiedData = [...this.state.documentsData]
+    else copiedData = [...this.state.filteredData]
 
+    //const copiedData = [...this.state.documentsData]
+    const newData = []
+    console.log('data w searchu', copiedData)
     copiedData.map(record => {
       const chosenCategory = record[this.state.category].toLowerCase()
       const searchValue = this.state.searchInputValue.toLowerCase()
 
-      if (chosenCategory.includes(searchValue)) newData.push(record)
+      if (chosenCategory.includes(searchValue)) {
+        console.log(`${searchValue} jest w ${chosenCategory}}`)
+        newData.push(record)
+      }
     })
-    this.setState({filteredData: newData})
+    const copiedFilters = [...this.state.filterRequests]
+    copiedFilters.push({category: this.state.category, searchInput: this.state.searchInputValue})
+
+    //pushuje sie [] do filteredData i przez to wyswietlaja sie wszystkie
+    this.setState({ filteredData: newData, filtered: true, filterRequests: copiedFilters })
+    console.log('filter w searchu', this.state.filterRequests)
   }
 
-  handleInputChange = (event) => { this.setState({searchInputValue: event.target.value}) }
+  handleInputChange = (event) => { this.setState({ searchInputValue: event.target.value }) }
+
+  handleDeleteFilter = (id) => { 
+    const newData = [];
+    let copiedFilteredRequests = [...this.state.filterRequests]
+    copiedFilteredRequests.splice(id, 1)
+    
+    this.setState({ filterRequests: copiedFilteredRequests, filteredData: [] })
+    if(this.state.filterRequests === []) {
+      this.setState({ filtered: false }) 
+      this.refreshData(); 
+    }
+    else {
+      let copiedData = []
+      copiedFilteredRequests.map(filter => {
+        if (this.state.filteredData.length < 1) copiedData = [...this.state.documentsData]
+        else copiedData = this.state.filteredData
+        return copiedData.map(record => {
+          const chosenCategory = record[filter.category].toLowerCase()
+          const searchValue = filter.searchInput.toLowerCase()
+          if (chosenCategory.includes(searchValue)) newData.push(record)
+        })
+      })
+      this.setState({filteredData: newData})
+    }
+  }
 
   render(){
     return (
@@ -279,9 +320,13 @@ class ThesisDocuments extends Component {
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
+          filtered={this.state.filtered}
+          filterRequests={this.state.filterRequests}
+          inputValue={this.state.searchInputValue}
           handleCategory={this.handleCategoryChange}
           handleSearch={this.handleSearch}
           handleInput={this.handleInputChange}
+          handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
           <ThesisTable 
