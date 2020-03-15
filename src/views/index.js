@@ -6,3 +6,5 @@ export { default as Settings } from './Settings';
 export { default as SignIn } from './SignIn';
 export { default as SignUp } from './SignUp';
 export { default as ThesisDocuments } from './ThesisDocuments';
+export { default as Publications } from './Publications';
+export { default as StudentsDocuments } from './StudentsDocuments';

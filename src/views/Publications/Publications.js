@@ -5,7 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { StudentsDocumentsToolbar, StudentsDocumentsTable } from './components';
+import { PublicationsToolbar, PublicationsTable } from './components';
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
 import Alert from '../../UI/Alert/Alert'
@@ -13,7 +13,7 @@ import Alert from '../../UI/Alert/Alert'
 import DialogWindow from './components/DialogWindow/DialogWindow'
 import DeleteDialog from './components/DeleteDialog/DeleteDialog'
 
-class StudentsDocuments extends Component {
+class Publications extends Component {
   state = {
     documentsData: [],
     filteredData: [],
@@ -39,7 +39,7 @@ class StudentsDocuments extends Component {
   }
   
   refreshData = () => {
-    axios.get('/documents/students')
+    axios.get('/documents/publications')
     .then(response => {
       this.setState({documentsData: response.data})
     }).then(console.log('Data refreshed'))
@@ -98,7 +98,7 @@ class StudentsDocuments extends Component {
       else{
         this.setState({loading: true})
   
-        axios.post('/documents/students', {
+        axios.post('/documents/publications', {
           id: uuid(),
           type: documentType,
           title: title,
@@ -161,8 +161,8 @@ class StudentsDocuments extends Component {
     this.setState({loading: true})
 
     recordsId.map(async record => {
-      await axios.get(`/documents/students/${record}`)
-      axios.delete(`/documents/students/${record}`)
+      await axios.get(`/documents/publications/${record}`)
+      axios.delete(`/documents/publications/${record}`)
         .then(response => {
           console.log(response)
           if (response.status < 200 || response.status > 299) {
@@ -189,8 +189,8 @@ class StudentsDocuments extends Component {
   }
 
   handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/students/download/${file}`, '_blank');
-    // axios.get('/documents/students/download')
+    window.open(`http://localhost:8080/documents/publications/download/${file}`, '_blank');
+    // axios.get('/documents/publications/download')
     //   .then(response => {
     //     console.log(response, 'Weszlo')
       // })
@@ -226,7 +226,7 @@ class StudentsDocuments extends Component {
     const data = new FormData();
     data.append('file', this.state.file);
 
-    axios.put('/documents/students/upload/', data)
+    axios.put('/documents/publications/upload/', data)
     .then(response => console.log(response))
     //.then(clearTimeout(timeout))
     .catch(err => console.log(err))
@@ -315,7 +315,7 @@ class StudentsDocuments extends Component {
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <StudentsDocumentsToolbar 
+        <PublicationsToolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
@@ -328,7 +328,7 @@ class StudentsDocuments extends Component {
           handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
-          <StudentsDocumentsTable 
+          <PublicationsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
@@ -376,4 +376,4 @@ class StudentsDocuments extends Component {
   }
 }
 
-export default StudentsDocuments;
+export default Publications;

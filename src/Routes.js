@@ -6,7 +6,6 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 //import ThesisDocuments from './views/ThesisDocuments/ThesisDocuments'
 import ExternalDocuments from './views/ExternalDocuments/ExternalDocuments'
-import StudentsDocuments from './views/StudentsDocuments/StudentsDocuments'
 
 
 import {
@@ -17,7 +16,9 @@ import {
   SignUp as SignUpView,
   SignIn as SignInView,
   NotFound as NotFoundView,
-  ThesisDocuments as ThesisDocumentsView
+  ThesisDocuments as ThesisDocumentsView,
+  Publications as PublicationsView,
+  StudentsDocuments as StudentsDocumentsView
 } from './views';
 
 const Routes = () => {
@@ -41,10 +42,16 @@ const Routes = () => {
         path="/documents/thesis"
       />
       <RouteWithLayout
-        component={StudentsDocuments}
+        component={StudentsDocumentsView}
         exact
         layout={MainLayout}
-        path="/students"
+        path="/documents/students"
+      />
+      <RouteWithLayout
+        component={PublicationsView}
+        exact
+        layout={MainLayout}
+        path="/documents/publications"
       />
       {/* <RouteWithLayout
         component={WorkersDocuments}

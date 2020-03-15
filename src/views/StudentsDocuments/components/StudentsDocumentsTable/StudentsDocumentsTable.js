@@ -40,8 +40,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UsersTable = props => {
-  const { className, documentsData, ...rest } = props;
+const StudentsDocumentsTable = props => {
+  const { className, documentsData, fileDownload, findSelected, ...rest } = props;
 
   const classes = useStyles();
 
@@ -79,8 +79,9 @@ const UsersTable = props => {
         selectedUsers.slice(selectedIndex + 1)
       );
     }
-
     setSelectedUsers(newSelectedUsers);
+    console.log(newSelectedUsers)
+    findSelected(newSelectedUsers)
   };
 
   const handlePageChange = (event, page) => {
@@ -113,7 +114,7 @@ const UsersTable = props => {
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Typ dokumentu</TableCell>
+                  <TableCell>Typ</TableCell>
                   <TableCell>Nazwa</TableCell>
                   <TableCell>Dotyczy</TableCell>
                   <TableCell>Autor</TableCell>
@@ -151,7 +152,7 @@ const UsersTable = props => {
                       {moment(doc.addedAt).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      <GetAppIcon/>                    
+                      <GetAppIcon onClick={() => fileDownload(doc.file)} style={{cursor: 'pointer'}}/>                    
                     </TableCell>                   
                   </TableRow>
                 ))}
@@ -175,9 +176,11 @@ const UsersTable = props => {
   );
 };
 
-UsersTable.propTypes = {
+StudentsDocumentsTable.propTypes = {
   className: PropTypes.string,
-  documentsData: PropTypes.array.isRequired
+  documentsData: PropTypes.array.isRequired,
+  findSelected: PropTypes.func,
+  fileDownload: PropTypes.func
 };
 
-export default UsersTable;
+export default StudentsDocumentsTable;

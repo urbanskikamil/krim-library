@@ -11,6 +11,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import WorkIcon from '@material-ui/icons/Work';
 import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
+import SchoolIcon from '@material-ui/icons/School';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 import { Profile, SidebarNav } from './components';
 
@@ -46,17 +48,22 @@ const Sidebar = props => {
     {
       title: 'Prace dyplomowe',
       href: '/documents/thesis',
-      icon: <CollectionsBookmarkIcon />
-    },
-    {
-      title: 'Prace pracowników',
-      href: '/workers',
-      icon: <WorkIcon />
+      icon: <SchoolIcon />
     },
     {
       title: 'Prace studentów',
-      href: '/students',
+      href: '/documents/students',
       icon: <PeopleIcon />
+    },
+    {
+      title: 'Publikacje naukowe',
+      href: '/documents/publications',
+      icon: <MenuBookIcon />
+    },   
+    {
+      title: 'Pomoce dydaktyczne',
+      href: '/documents/didactics',
+      icon: <WorkIcon />
     },
     {
       title: 'Dashboard',
