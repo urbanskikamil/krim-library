@@ -35,6 +35,7 @@ class ThesisDocuments extends Component {
     searchInputValue: '',
     filtered: false,
     filterRequests: [],
+    showNothing: false,
   }
   
   refreshData = () => {
@@ -262,28 +263,24 @@ class ThesisDocuments extends Component {
       return
     }
 
+    const newData = []
     let copiedData = []
+
     if (this.state.filteredData.length < 1) copiedData = [...this.state.documentsData]
     else copiedData = [...this.state.filteredData]
 
-    //const copiedData = [...this.state.documentsData]
-    const newData = []
-    console.log('data w searchu', copiedData)
     copiedData.map(record => {
       const chosenCategory = record[this.state.category].toLowerCase()
       const searchValue = this.state.searchInputValue.toLowerCase()
 
-      if (chosenCategory.includes(searchValue)) {
-        console.log(`${searchValue} jest w ${chosenCategory}}`)
-        newData.push(record)
-      }
+      if (chosenCategory.includes(searchValue)) { newData.push(record) }
+      return null
     })
     const copiedFilters = [...this.state.filterRequests]
     copiedFilters.push({category: this.state.category, searchInput: this.state.searchInputValue})
-
-    //pushuje sie [] do filteredData i przez to wyswietlaja sie wszystkie
     this.setState({ filteredData: newData, filtered: true, filterRequests: copiedFilters })
-    console.log('filter w searchu', this.state.filterRequests)
+    if(newData.length < 1) this.setState({showNothing: true})
+    else this.setState({showNothing: false})
   }
 
   handleInputChange = (event) => { this.setState({ searchInputValue: event.target.value }) }
@@ -294,22 +291,24 @@ class ThesisDocuments extends Component {
     copiedFilteredRequests.splice(id, 1)
     
     this.setState({ filterRequests: copiedFilteredRequests, filteredData: [] })
-    if(this.state.filterRequests === []) {
-      this.setState({ filtered: false }) 
+
+    if(copiedFilteredRequests.length < 1) {
+      this.setState({ showNothing: false, filtered: false }) 
       this.refreshData(); 
     }
     else {
-      let copiedData = []
+      let copiedData = [...this.state.documentsData]
       copiedFilteredRequests.map(filter => {
-        if (this.state.filteredData.length < 1) copiedData = [...this.state.documentsData]
-        else copiedData = this.state.filteredData
         return copiedData.map(record => {
           const chosenCategory = record[filter.category].toLowerCase()
           const searchValue = filter.searchInput.toLowerCase()
-          if (chosenCategory.includes(searchValue)) newData.push(record)
+          if (chosenCategory.includes(searchValue) && !newData.some(e => e.id === record.id)) {
+            newData.push(record)
+          }
+          return null
         })
       })
-      this.setState({filteredData: newData})
+      this.setState({showNothing: false, filteredData: newData })
     }
   }
 
@@ -330,8 +329,8 @@ class ThesisDocuments extends Component {
         />
         <div style={{marginTop: theme.spacing(2)}}>          
           <ThesisTable 
-            documentsData={this.state.filteredData.length < 1 ? this.state.documentsData 
-              : this.state.filteredData}
+            documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
+              : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload} 
           />

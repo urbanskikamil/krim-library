@@ -12,9 +12,9 @@ const naming = {
 }
 
 const FilterConditions = props => {
-  const { category, inputValue, filterRequests, handleDeleteFilter } = props;
+  const { filterRequests, handleDeleteFilter } = props;
   const classes = useStyles();
-  console.log('filter w komp', filterRequests)
+
   return (
     <div>
       <div className={classes.filter}>

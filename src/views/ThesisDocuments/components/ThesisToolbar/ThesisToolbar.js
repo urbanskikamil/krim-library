@@ -48,7 +48,7 @@ const ThesisToolbar = props => {
         </Button>
       </div>
       { filtered ?
-        <FilterConditions category={category} inputValue={inputValue} filterRequests={filterRequests} handleDeleteFilter={handleDeleteFilter} />
+        <FilterConditions filterRequests={filterRequests} handleDeleteFilter={handleDeleteFilter} />
         : null
       }
     </div>
