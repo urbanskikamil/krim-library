@@ -9,15 +9,7 @@ import { Delete, CloudUpload } from '@material-ui/icons';
 import { SearchInput } from 'components';
 import FilterConditions from './components/FilterConditions'
 
-const categories = [
-  {label: 'Typ', key: 'type'},
-  {label: 'Nazwa', key: 'title'},
-  {label: 'Dotyczy', key: 'field'},
-  {label: 'Autor', key: 'author'},
-  {label: 'Promotor', key: 'Supervisor'},
-]
-
-const ThesisToolbar = props => {
+const DidacticsToolbar = props => {
   const { className, clicked, deleteDialogOpen, category, filtered, filterRequests, inputValue, handleCategory, handleSearch, handleInput, handleDeleteFilter, ...rest } = props;
   const classes = useStyles();
 
@@ -31,7 +23,6 @@ const ThesisToolbar = props => {
           className={classes.searchInput}
           placeholder="Znajdź"
           category={category}
-          categories={categories}
           handleCategory={handleCategory}
           handleSearch={handleSearch}
           handleInput={handleInput}
@@ -64,7 +55,7 @@ const ThesisToolbar = props => {
   );
 };
 
-ThesisToolbar.propTypes = {
+DidacticsToolbar.propTypes = {
   className: PropTypes.string,
   clicked: PropTypes.func,
   deleteDialogOpen: PropTypes.func,
@@ -90,4 +81,4 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default ThesisToolbar;
+export default DidacticsToolbar;

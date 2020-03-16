@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const StudentsDocumentsTable = props => {
+const DidacticsTable = props => {
   const { className, documentsData, fileDownload, findSelected, ...rest } = props;
 
   const classes = useStyles();
@@ -116,9 +116,9 @@ const StudentsDocumentsTable = props => {
                   </TableCell>
                   <TableCell>Typ</TableCell>
                   <TableCell>Nazwa</TableCell>
-                  <TableCell>Przedmiot</TableCell>                  
                   <TableCell>Dotyczy</TableCell>
                   <TableCell>Autor</TableCell>
+                  <TableCell>Promotor</TableCell>                  
                   <TableCell>Dodane dnia</TableCell>
                   <TableCell>Pobierz</TableCell>
                 </TableRow>
@@ -145,9 +145,9 @@ const StudentsDocumentsTable = props => {
                       </div>
                     </TableCell>
                     <TableCell>{doc.title}</TableCell>
-                    <TableCell>{doc.studiesClass}</TableCell>
                     <TableCell>{doc.field}</TableCell>
                     <TableCell>{doc.author}</TableCell>
+                    <TableCell>{doc.supervisor}</TableCell>
                     <TableCell>
                       {moment(doc.addedAt).format('DD/MM/YYYY')}
                     </TableCell>
@@ -176,11 +176,11 @@ const StudentsDocumentsTable = props => {
   );
 };
 
-StudentsDocumentsTable.propTypes = {
+DidacticsTable.propTypes = {
   className: PropTypes.string,
   documentsData: PropTypes.array.isRequired,
   findSelected: PropTypes.func,
   fileDownload: PropTypes.func
 };
 
-export default StudentsDocumentsTable;
+export default DidacticsTable;

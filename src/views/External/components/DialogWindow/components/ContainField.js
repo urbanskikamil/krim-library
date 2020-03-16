@@ -40,21 +40,10 @@ const MenuProps = {
 };
 
 const fields = [
-  'Matematyka',
-  'Fizyka',
-  'Chemia',
-  'Elektronika',
-  'Nauka o materiałach',
-  'Automatyka',
-  'Metody numeryczne',
-  'Sterowanie',
   'Informatyka',
   'Mechanika',
   'Systemy wizyjne',
-  'Wytrzymałość materiałów',
-  'Sieci neuronowe',
-  'Algorytmy genetyczne'
-].sort();
+];
 
 function getStyles(field, contains, theme) {
   return {

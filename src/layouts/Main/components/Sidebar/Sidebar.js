@@ -3,16 +3,19 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
-import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import SettingsIcon from '@material-ui/icons/Settings';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import WorkIcon from '@material-ui/icons/Work';
-import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
-import SchoolIcon from '@material-ui/icons/School';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+
+import {
+  //Dashboard,
+  // ShoppingBasket,
+  // AccountBox,
+  // Settings,
+  // LockOpen,
+  People,
+  Work,
+  School,
+  MenuBook,
+  LibraryBooks
+} from '@material-ui/icons'
 
 import { Profile, SidebarNav } from './components';
 
@@ -48,48 +51,53 @@ const Sidebar = props => {
     {
       title: 'Prace dyplomowe',
       href: '/documents/thesis',
-      icon: <SchoolIcon />
+      icon: <School />
     },
     {
       title: 'Prace studentów',
       href: '/documents/students',
-      icon: <PeopleIcon />
+      icon: <People />
     },
     {
       title: 'Publikacje naukowe',
       href: '/documents/publications',
-      icon: <MenuBookIcon />
+      icon: <MenuBook />
     },   
     {
       title: 'Pomoce dydaktyczne',
       href: '/documents/didactics',
-      icon: <WorkIcon />
+      icon: <Work />
     },
     {
-      title: 'Dashboard',
-      href: '/dashboardd',
-      icon: <DashboardIcon />
-    },
-    {
-      title: 'Products',
-      href: '/products',
-      icon: <ShoppingBasketIcon />
-    },
-    {
-      title: 'Authentication',
-      href: '/sign-in',
-      icon: <LockOpenIcon />
-    },
-    {
-      title: 'Account',
-      href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
-    }
+      title: 'Materiały zewnętrzne',
+      href: '/documents/external',
+      icon: <LibraryBooks />
+    }, 
+    // {
+    //   title: 'Dashboard',
+    //   href: '/dashboardd',
+    //   icon: <Dashboard />
+    // },
+    // {
+    //   title: 'Products',
+    //   href: '/products',
+    //   icon: <ShoppingBasket />
+    // },
+    // {
+    //   title: 'Authentication',
+    //   href: '/sign-in',
+    //   icon: <LockOpen />
+    // },
+    // {
+    //   title: 'Account',
+    //   href: '/account',
+    //   icon: <AccountBox />
+    // },
+    // {
+    //   title: 'Settings',
+    //   href: '/settings',
+    //   icon: <Settings />
+    // }
   ];
 
   return (

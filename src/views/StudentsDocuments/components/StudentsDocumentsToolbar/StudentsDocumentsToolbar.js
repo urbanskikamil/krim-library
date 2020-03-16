@@ -9,6 +9,14 @@ import { Delete, CloudUpload } from '@material-ui/icons';
 import { SearchInput } from 'components';
 import FilterConditions from './components/FilterConditions'
 
+const categories = [
+  {label: 'Typ', key: 'type'},
+  {label: 'Nazwa', key: 'title'},
+  {label: 'Przedmiot', key: 'studiesClass'},
+  {label: 'Dotyczy', key: 'field'},
+  {label: 'Autor', key: 'author'},
+]
+
 const StudentsDocumentsToolbar = props => {
   const { className, clicked, deleteDialogOpen, category, filtered, filterRequests, inputValue, handleCategory, handleSearch, handleInput, handleDeleteFilter, ...rest } = props;
   const classes = useStyles();
@@ -23,6 +31,7 @@ const StudentsDocumentsToolbar = props => {
           className={classes.searchInput}
           placeholder="Znajdź"
           category={category}
+          categories={categories}
           handleCategory={handleCategory}
           handleSearch={handleSearch}
           handleInput={handleInput}

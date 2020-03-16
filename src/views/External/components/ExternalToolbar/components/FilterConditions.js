@@ -6,9 +6,9 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 const naming = {
   title: 'Nazwa',
   type: 'Typ',
-  studiesClass: 'Przedmiot',
   field: 'Dotyczy',
   author: 'Autor',
+  Supervisor: 'Promotor'
 }
 
 const FilterConditions = props => {

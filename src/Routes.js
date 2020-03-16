@@ -4,10 +4,6 @@ import { Switch, Redirect } from 'react-router-dom';
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
-//import ThesisDocuments from './views/ThesisDocuments/ThesisDocuments'
-import ExternalDocuments from './views/ExternalDocuments/ExternalDocuments'
-
-
 import {
   Dashboard as DashboardView,
   ProductList as ProductListView,
@@ -18,7 +14,9 @@ import {
   NotFound as NotFoundView,
   ThesisDocuments as ThesisDocumentsView,
   Publications as PublicationsView,
-  StudentsDocuments as StudentsDocumentsView
+  StudentsDocuments as StudentsDocumentsView,
+  Didactics as DidacticsView,
+  External as ExternalView
 } from './views';
 
 const Routes = () => {
@@ -53,18 +51,24 @@ const Routes = () => {
         layout={MainLayout}
         path="/documents/publications"
       />
+      <RouteWithLayout
+        component={DidacticsView}
+        exact
+        layout={MainLayout}
+        path="/documents/didactics"
+      />      
+      <RouteWithLayout
+        component={ExternalView}
+        exact
+        layout={MainLayout}
+        path="/documents/external"
+      />
       {/* <RouteWithLayout
         component={WorkersDocuments}
         exact
         layout={MainLayout}
         path="/internal"
       /> */}
-      <RouteWithLayout
-        component={ExternalDocuments}
-        exact
-        layout={MainLayout}
-        path="/external"
-      />
       <RouteWithLayout
         component={ProductListView}
         exact

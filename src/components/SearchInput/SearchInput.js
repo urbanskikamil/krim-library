@@ -6,16 +6,8 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { Button, Paper, Input, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 
-const categories = [
-  {label: 'Typ', key: 'type'},
-  {label: 'Nazwa', key: 'title'},
-  {label: 'Dotyczy', key: 'field'},
-  {label: 'Autor', key: 'author'},
-  {label: 'Promotor', key: 'Supervisor'},
-]
-
 const SearchInput = props => {
-  const { className, onChange, style, category, handleCategory, handleSearch, handleInput, ...rest } = props;
+  const { className, onChange, style, category, handleCategory, handleSearch, handleInput, categories, ...rest } = props;
 
   const classes = useStyles();
 

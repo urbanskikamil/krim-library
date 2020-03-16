@@ -5,7 +5,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { StudentsDocumentsToolbar, StudentsDocumentsTable } from './components';
+import { DidacticsToolbar, DidacticsTable } from './components';
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
 import Alert from '../../UI/Alert/Alert'
@@ -13,14 +13,14 @@ import Alert from '../../UI/Alert/Alert'
 import DialogWindow from './components/DialogWindow/DialogWindow'
 import DeleteDialog from './components/DeleteDialog/DeleteDialog'
 
-class StudentsDocuments extends Component {
+class Didactics extends Component {
   state = {
     documentsData: [],
     filteredData: [],
     dialogOpen: false,
     title: '',
     author: '',
-    studiesClass: '',
+    supervisor: '',
     documentType: '',
     contains: [],
     date: '',
@@ -39,7 +39,7 @@ class StudentsDocuments extends Component {
   }
   
   refreshData = () => {
-    axios.get('/documents/students')
+    axios.get('/documents/didactics')
     .then(response => {
       this.setState({documentsData: response.data})
     }).then(console.log('Data refreshed'))
@@ -63,7 +63,7 @@ class StudentsDocuments extends Component {
       dialogOpen: false,
       title: '',
       author: '',
-      studiesClass: '',
+      supervisor: '',
       documentType: '',
       contains: [],
       file: ''
@@ -75,7 +75,7 @@ class StudentsDocuments extends Component {
 
   handleAuthorChange = (event) => {this.setState({author: event.target.value})}
   
-  handleStudiesClassChange = (event) => {this.setState({studiesClass: event.target.value})}
+  handleSupervisorChange = (event) => {this.setState({supervisor: event.target.value})}
 
   handleContainsChange = (event) => {  
     let copiedContains = [...this.state.contains];
@@ -87,9 +87,9 @@ class StudentsDocuments extends Component {
 
     this.uploadFiles()
     
-    const { documentType, title, contains, author, studiesClass, file } = this.state
+    const { documentType, title, contains, author, supervisor, file } = this.state
 
-      if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
+      if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
         this.setState({
           alertContent: 'Proszę wypełnić wszystkie pola',
           severity: 'warning', 
@@ -98,13 +98,13 @@ class StudentsDocuments extends Component {
       else{
         this.setState({loading: true})
   
-        axios.post('/documents/students', {
+        axios.post('/documents/didactics', {
           id: uuid(),
           type: documentType,
           title: title,
           field: contains.join(', '),
           author: author,
-          studiesClass: studiesClass,
+          supervisor: supervisor,
           addedAt: moment(),
           file: file.name
         })
@@ -115,7 +115,7 @@ class StudentsDocuments extends Component {
               loading: false,
               title: '',
               author: '',
-              studiesClass: '',
+              supervisor: '',
               documentType: '',
               contains: [],
               file: ''
@@ -142,7 +142,7 @@ class StudentsDocuments extends Component {
                 loading: false,
                 title: '',
                 author: '',
-                studiesClass: '',
+                supervisor: '',
                 documentType: '',
                 contains: [],
                 file: '',
@@ -161,8 +161,8 @@ class StudentsDocuments extends Component {
     this.setState({loading: true})
 
     recordsId.map(async record => {
-      await axios.get(`/documents/students/${record}`)
-      axios.delete(`/documents/students/${record}`)
+      await axios.get(`/documents/didactics/${record}`)
+      axios.delete(`/documents/didactics/${record}`)
         .then(response => {
           console.log(response)
           if (response.status < 200 || response.status > 299) {
@@ -189,8 +189,8 @@ class StudentsDocuments extends Component {
   }
 
   handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/students/download/${file}`, '_blank');
-    // axios.get('/documents/students/download')
+    window.open(`http://localhost:8080/documents/didactics/download/${file}`, '_blank');
+    // axios.get('/documents/Didactics/download')
     //   .then(response => {
     //     console.log(response, 'Weszlo')
       // })
@@ -226,7 +226,7 @@ class StudentsDocuments extends Component {
     const data = new FormData();
     data.append('file', this.state.file);
 
-    axios.put('/documents/students/upload/', data)
+    axios.put('/documents/didactics/upload/', data)
     .then(response => console.log(response))
     //.then(clearTimeout(timeout))
     .catch(err => console.log(err))
@@ -270,7 +270,6 @@ class StudentsDocuments extends Component {
     else copiedData = [...this.state.filteredData]
 
     copiedData.map(record => {
-      console.log(copiedData)
       const chosenCategory = record[this.state.category].toLowerCase()
       const searchValue = this.state.searchInputValue.toLowerCase()
 
@@ -316,7 +315,7 @@ class StudentsDocuments extends Component {
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <StudentsDocumentsToolbar 
+        <DidacticsToolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
@@ -329,7 +328,7 @@ class StudentsDocuments extends Component {
           handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
-          <StudentsDocumentsTable 
+          <DidacticsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
@@ -346,8 +345,8 @@ class StudentsDocuments extends Component {
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           submited={(event) => this.handleSubmit(event)}
-          studiesClass={this.state.studiesClass}
-          studiesClassChange={this.handleStudiesClassChange}
+          supervisor={this.state.supervisor}
+          supervisorChange={this.handleSupervisorChange}
           title={this.state.title}
           titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
@@ -377,4 +376,4 @@ class StudentsDocuments extends Component {
   }
 }
 
-export default StudentsDocuments;
+export default Didactics;

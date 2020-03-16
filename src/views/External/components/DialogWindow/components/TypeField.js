@@ -23,8 +23,10 @@ const typeField = (props) => {
           required  
           value={props.documentType}
         >
-          <MenuItem value="Referat">Referat</MenuItem>
-          <MenuItem value="Projekt przedmiotowy">Projekt przedmiotowy</MenuItem>
+          <MenuItem value="Praca magisterska">Praca magisterska</MenuItem>
+          <MenuItem value="Praca inzynierska">Praca inzynierska</MenuItem>
+          <MenuItem value="Praca doktorska">Praca doktorska</MenuItem>
+          <MenuItem value="Praca">Praca</MenuItem>
         </Select>
       </FormControl>
     </form>

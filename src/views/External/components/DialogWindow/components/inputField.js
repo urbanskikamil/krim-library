@@ -6,7 +6,7 @@ const inputField = (props) => {
   const fields = [
     {id:'title', label: 'Tytuł dokumentu', value: props.title, change: props.titleChange},
     {id:'author', label: 'Autor', value: props.author, change: props.authorChange},
-    {id:'studiesClass', label: 'Przedmiot', value: props.studiesClass, change: props.studiesClassChange},
+    {id:'supervisor', label: 'Promotor', value: props.supervisor, change: props.supervisorChange},
   ]
 
   return( fields.map((field, index) => 

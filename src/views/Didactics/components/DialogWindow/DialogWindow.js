@@ -31,8 +31,8 @@ const DialogWindow = (props) => {
             <InputField 
               author={props.author}
               authorChange={props.authorChange}
-              studiesClass={props.studiesClass}
-              studiesClassChange={props.studiesClassChange} 
+              supervisor={props.supervisor}
+              supervisorChange={props.supervisorChange} 
               title={props.title}
               titleChange={props.titleChange}
             />
@@ -109,8 +109,8 @@ DialogWindow.propTypes = {
   documentType: PropTypes.string,
   maxWidth: PropTypes.number,
   submited: PropTypes.func,
-  class: PropTypes.string,
-  classChange: PropTypes.func,
+  supervisor: PropTypes.string,
+  supervisorChange: PropTypes.func,
   title: PropTypes.string,
   titleChange: PropTypes.func,
   typeChange: PropTypes.func

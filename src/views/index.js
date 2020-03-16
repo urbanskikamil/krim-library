@@ -8,3 +8,5 @@ export { default as SignUp } from './SignUp';
 export { default as ThesisDocuments } from './ThesisDocuments';
 export { default as Publications } from './Publications';
 export { default as StudentsDocuments } from './StudentsDocuments';
+export { default as Didactics } from './Didactics';
+export { default as External } from './External';

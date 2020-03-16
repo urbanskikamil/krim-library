@@ -38,7 +38,7 @@ const Topbar = props => {
               src="/images/logos/1-0.png"
               style={{maxWidth: '50px'}}
             />
-            <div style={{display: 'inline', color: 'white', fontSize: '24px', marginLeft: '10px'}}>Biblioteka Katedry Robotyki i Mechtroniki AGH</div>
+            <div style={{display: 'inline', color: 'white', fontSize: '24px', marginLeft: '10px'}}>Biblioteka KRiM</div>
           </div>
         </RouterLink>
         <div className={classes.flexGrow} />
