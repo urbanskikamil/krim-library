@@ -5,13 +5,23 @@ import Snackbar from '@material-ui/core/Snackbar';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { DidacticsToolbar, DidacticsTable } from './components';
+import { Toolbar, DocumentsTable } from '../../layouts/Main/components'
+import { Alert, DeleteDialog, DialogWindow } from '../../UI'
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
-import Alert from '../../UI/Alert/Alert'
 
-import DialogWindow from './components/DialogWindow/DialogWindow'
-import DeleteDialog from './components/DeleteDialog/DeleteDialog'
+const categories = [
+  {label: 'Typ', key: 'type'},
+  {label: 'Przedmiot', key: 'studiesClass'},
+  {label: 'Nazwa', key: 'title'},
+  {label: 'Dotyczy', key: 'field'},
+  {label: 'Autor', key: 'author'},
+]
+
+const types = [
+  {value: 'Materiały wykładowe'},
+  {value: 'Konspekt laboratoryjny'},
+]
 
 class Didactics extends Component {
   state = {
@@ -20,8 +30,8 @@ class Didactics extends Component {
     dialogOpen: false,
     title: '',
     author: '',
-    supervisor: '',
     documentType: '',
+    studiesClass: '',
     contains: [],
     date: '',
     selectedRecords: [],
@@ -37,6 +47,13 @@ class Didactics extends Component {
     filterRequests: [],
     showNothing: false,
   }
+
+  fields = [
+    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
+    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
+    {id:'supervisor', label: 'Promotor', value: this.state.supervisor, 
+    change: this.handleSupervisorChange},
+  ]
   
   refreshData = () => {
     axios.get('/documents/didactics')
@@ -49,11 +66,6 @@ class Didactics extends Component {
     this.refreshData();
   }
 
-  componentDidUpdate () {
-    //console.log('did update')
-    //console.log('docData', this.state.documentsData)
-  }
-
   handleAddItem = () => {this.setState({dialogOpen: true})}
 
   handleDialogOpen = () => {this.setState({dialogOpen: true})}
@@ -63,7 +75,7 @@ class Didactics extends Component {
       dialogOpen: false,
       title: '',
       author: '',
-      supervisor: '',
+      studiesClass: '',
       documentType: '',
       contains: [],
       file: ''
@@ -75,7 +87,7 @@ class Didactics extends Component {
 
   handleAuthorChange = (event) => {this.setState({author: event.target.value})}
   
-  handleSupervisorChange = (event) => {this.setState({supervisor: event.target.value})}
+  handleStudiesClassChange = (event) => {this.setState({studiesClass: event.target.value})}
 
   handleContainsChange = (event) => {  
     let copiedContains = [...this.state.contains];
@@ -87,9 +99,9 @@ class Didactics extends Component {
 
     this.uploadFiles()
     
-    const { documentType, title, contains, author, supervisor, file } = this.state
+    const { documentType, title, contains, author, studiesClass, file } = this.state
 
-      if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
+      if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
         this.setState({
           alertContent: 'Proszę wypełnić wszystkie pola',
           severity: 'warning', 
@@ -104,7 +116,7 @@ class Didactics extends Component {
           title: title,
           field: contains.join(', '),
           author: author,
-          supervisor: supervisor,
+          studiesClass: studiesClass,
           addedAt: moment(),
           file: file.name
         })
@@ -115,7 +127,7 @@ class Didactics extends Component {
               loading: false,
               title: '',
               author: '',
-              supervisor: '',
+              studiesClass: '',
               documentType: '',
               contains: [],
               file: ''
@@ -142,7 +154,7 @@ class Didactics extends Component {
                 loading: false,
                 title: '',
                 author: '',
-                supervisor: '',
+                studiesClass: '',
                 documentType: '',
                 contains: [],
                 file: '',
@@ -315,12 +327,13 @@ class Didactics extends Component {
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <DidacticsToolbar 
+        <Toolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
           filtered={this.state.filtered}
           filterRequests={this.state.filterRequests}
+          categories={categories}
           inputValue={this.state.searchInputValue}
           handleCategory={this.handleCategoryChange}
           handleSearch={this.handleSearch}
@@ -328,16 +341,15 @@ class Didactics extends Component {
           handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
-          <DidacticsTable 
+          <DocumentsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload} 
+            categories={categories}
           />
         </div>
         <DialogWindow
-          author={this.state.author}
-          authorChange={this.handleAuthorChange}
           closed={this.handleDialogClose}
           contains={this.state.contains}
           containsChange={this.handleContainsChange}
@@ -345,14 +357,12 @@ class Didactics extends Component {
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           submited={(event) => this.handleSubmit(event)}
-          supervisor={this.state.supervisor}
-          supervisorChange={this.handleSupervisorChange}
-          title={this.state.title}
-          titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
           chosed={event => this.handleFileChosed(event)}
           handleFile={this.handleFile}
+          fields={this.fields}
+          types={types}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

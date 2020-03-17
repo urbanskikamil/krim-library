@@ -5,13 +5,21 @@ import Snackbar from '@material-ui/core/Snackbar';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { PublicationsToolbar, PublicationsTable } from './components';
+import { Toolbar, DocumentsTable } from '../../layouts/Main/components'
+import { Alert, DeleteDialog, DialogWindow } from '../../UI'
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
-import Alert from '../../UI/Alert/Alert'
 
-import DialogWindow from './components/DialogWindow/DialogWindow'
-import DeleteDialog from './components/DeleteDialog/DeleteDialog'
+const categories = [
+  {label: 'Typ', key: 'type'},
+  {label: 'Nazwa', key: 'title'},
+  {label: 'Dotyczy', key: 'field'},
+  {label: 'Autor', key: 'author'},
+]
+
+const types = [
+  {value: 'Publikacja'},
+]
 
 class Publications extends Component {
   state = {
@@ -20,7 +28,6 @@ class Publications extends Component {
     dialogOpen: false,
     title: '',
     author: '',
-    supervisor: '',
     documentType: '',
     contains: [],
     date: '',
@@ -38,6 +45,11 @@ class Publications extends Component {
     showNothing: false,
   }
   
+  fields = [
+    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
+    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
+  ]
+
   refreshData = () => {
     axios.get('/documents/publications')
     .then(response => {
@@ -63,7 +75,6 @@ class Publications extends Component {
       dialogOpen: false,
       title: '',
       author: '',
-      supervisor: '',
       documentType: '',
       contains: [],
       file: ''
@@ -75,8 +86,6 @@ class Publications extends Component {
 
   handleAuthorChange = (event) => {this.setState({author: event.target.value})}
   
-  handleSupervisorChange = (event) => {this.setState({supervisor: event.target.value})}
-
   handleContainsChange = (event) => {  
     let copiedContains = [...this.state.contains];
     copiedContains = event.target.value;
@@ -87,9 +96,9 @@ class Publications extends Component {
 
     this.uploadFiles()
     
-    const { documentType, title, contains, author, supervisor, file } = this.state
+    const { documentType, title, contains, author, studiesClass, file } = this.state
 
-      if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
+      if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
         this.setState({
           alertContent: 'Proszę wypełnić wszystkie pola',
           severity: 'warning', 
@@ -104,7 +113,6 @@ class Publications extends Component {
           title: title,
           field: contains.join(', '),
           author: author,
-          supervisor: supervisor,
           addedAt: moment(),
           file: file.name
         })
@@ -115,7 +123,6 @@ class Publications extends Component {
               loading: false,
               title: '',
               author: '',
-              supervisor: '',
               documentType: '',
               contains: [],
               file: ''
@@ -142,7 +149,6 @@ class Publications extends Component {
                 loading: false,
                 title: '',
                 author: '',
-                supervisor: '',
                 documentType: '',
                 contains: [],
                 file: '',
@@ -315,12 +321,13 @@ class Publications extends Component {
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <PublicationsToolbar 
+        <Toolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
           filtered={this.state.filtered}
           filterRequests={this.state.filterRequests}
+          categories={categories}
           inputValue={this.state.searchInputValue}
           handleCategory={this.handleCategoryChange}
           handleSearch={this.handleSearch}
@@ -328,11 +335,12 @@ class Publications extends Component {
           handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
-          <PublicationsTable 
+          <DocumentsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload} 
+            categories={categories}
           />
         </div>
         <DialogWindow
@@ -345,14 +353,14 @@ class Publications extends Component {
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           submited={(event) => this.handleSubmit(event)}
-          supervisor={this.state.supervisor}
-          supervisorChange={this.handleSupervisorChange}
           title={this.state.title}
           titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
           chosed={event => this.handleFileChosed(event)}
           handleFile={this.handleFile}
+          fields={this.fields}
+          types={types}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

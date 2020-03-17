@@ -5,13 +5,24 @@ import Snackbar from '@material-ui/core/Snackbar';
 import uuid from 'uuid/v1';
 import moment from 'moment';
 
-import { StudentsDocumentsToolbar, StudentsDocumentsTable } from './components';
+import { Toolbar, DocumentsTable } from '../../layouts/Main/components'
+import { Alert, DeleteDialog, DialogWindow } from '../../UI'
+
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
-import Alert from '../../UI/Alert/Alert'
 
-import DialogWindow from './components/DialogWindow/DialogWindow'
-import DeleteDialog from './components/DeleteDialog/DeleteDialog'
+const categories = [
+  {label: 'Typ', key: 'type'},
+  {label: 'Przedmiot', key: 'studiesClass'},
+  {label: 'Nazwa', key: 'title'},
+  {label: 'Dotyczy', key: 'field'},
+  {label: 'Autor', key: 'author'},
+]
+
+const types = [
+  {value: 'Referat'},
+  {value: 'Projekt przedmiotowy'},
+]
 
 class StudentsDocuments extends Component {
   state = {
@@ -38,6 +49,12 @@ class StudentsDocuments extends Component {
     showNothing: false,
   }
   
+  fields = [
+    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
+    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
+    {id:'studiesClass', label: 'Przedmiot', value: this.state.studiesClass, change: this.handleStudiesClassChange},
+  ]
+
   refreshData = () => {
     axios.get('/documents/students')
     .then(response => {
@@ -316,12 +333,13 @@ class StudentsDocuments extends Component {
   render(){
     return (
       <div style={{padding: theme.spacing(3)}}>
-        <StudentsDocumentsToolbar 
+        <Toolbar 
           clicked={this.handleAddItem}
           deleteDialogOpen={this.handleDeleteDialogOpen}
           category={this.state.category}
           filtered={this.state.filtered}
           filterRequests={this.state.filterRequests}
+          categories={categories}
           inputValue={this.state.searchInputValue}
           handleCategory={this.handleCategoryChange}
           handleSearch={this.handleSearch}
@@ -329,16 +347,15 @@ class StudentsDocuments extends Component {
           handleDeleteFilter={this.handleDeleteFilter}
         />
         <div style={{marginTop: theme.spacing(2)}}>          
-          <StudentsDocumentsTable 
+          <DocumentsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
             findSelected={(records) => this.handleFindRecordId(records)}
-            fileDownload={this.handleFileDownload} 
+            fileDownload={this.handleFileDownload}
+            categories={categories}
           />
         </div>
         <DialogWindow
-          author={this.state.author}
-          authorChange={this.handleAuthorChange}
           closed={this.handleDialogClose}
           contains={this.state.contains}
           containsChange={this.handleContainsChange}
@@ -346,14 +363,12 @@ class StudentsDocuments extends Component {
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           submited={(event) => this.handleSubmit(event)}
-          studiesClass={this.state.studiesClass}
-          studiesClassChange={this.handleStudiesClassChange}
-          title={this.state.title}
-          titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
           chosed={event => this.handleFileChosed(event)}
           handleFile={this.handleFile}
+          fields={this.fields}
+          types={types}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}
