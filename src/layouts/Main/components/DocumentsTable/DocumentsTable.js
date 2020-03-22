@@ -113,7 +113,7 @@ const DocumentsTable = props => {
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  { props.categories.map(category => <TableCell>{category.label}</TableCell>) }
+                  { props.categories.map(category => <TableCell key={category.key}>{category.label}</TableCell>) }
                   <TableCell>Dodane dnia</TableCell>
                   <TableCell>Pobierz</TableCell>
                 </TableRow>
@@ -134,7 +134,7 @@ const DocumentsTable = props => {
                         value="true"
                       />
                     </TableCell>
-                    { props.categories.map(category => <TableCell>{doc[category.key]}</TableCell>) }
+                    { props.categories.map(category => <TableCell key={category.key}>{doc[category.key]}</TableCell>) }
                     <TableCell>
                       {moment(doc.addedAt).format('DD/MM/YYYY')}
                     </TableCell>
@@ -148,7 +148,7 @@ const DocumentsTable = props => {
           </div>
         </PerfectScrollbar>
       </CardContent>
-      <CardActions className={classes.actions}>
+      {/* <CardActions className={classes.actions}>
         <TablePagination
           component="div"
           count={documentsData.length}
@@ -158,7 +158,7 @@ const DocumentsTable = props => {
           rowsPerPage={rowsPerPage}
           rowsPerPageOptions={[5, 10, 25]}
         />
-      </CardActions>
+      </CardActions> */}
     </Card>
   );
 };

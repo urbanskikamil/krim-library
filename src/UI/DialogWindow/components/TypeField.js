@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -23,7 +24,7 @@ const typeField = (props) => {
           required  
           value={props.documentType}
         >
-          { props.types.map(type => <MenuItem value={type.value}>{type.value}</MenuItem>) }
+          { props.types.map(type => <MenuItem key={type.value} value={type.value}>{type.value}</MenuItem>) }
         </Select>
       </FormControl>
     </form>

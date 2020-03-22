@@ -10,9 +10,9 @@ const inputField = (props) => {
       key={index}
       label={field.label}
       margin="dense"
-      onChange={field.change}
+      onChange={props[field.change]}
       required
-      value={field.value}
+      value={props[field.id]}
       variant="filled"
       //type="text"
     />)

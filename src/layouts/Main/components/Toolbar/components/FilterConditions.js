@@ -8,7 +8,8 @@ const naming = {
   type: 'Typ',
   field: 'Dotyczy',
   author: 'Autor',
-  Supervisor: 'Promotor'
+  supervisor: 'Promotor',
+  studiesClass: 'Przedmiot'
 }
 
 const FilterConditions = props => {

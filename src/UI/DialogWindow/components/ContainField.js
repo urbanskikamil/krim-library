@@ -40,10 +40,27 @@ const MenuProps = {
 };
 
 const fields = [
+  'Techniki informatyczne',
+  'Techniki wytwarzania',
+  'Zapis konstrukcji 1',
+  'Matematyka 1',
+  'Fizyka 1',
+  'Chemia',
+  'Mechanika 1',
+  'Podstawy nauki o materiałach',
+  'Elektrotechnika i elektronika',
+  'Zapis konstrukcji 2',
+  'Matematyka 2',
+  'Fizyka 2',
+  'Metody numeryczne',
+  'Mechanika 2',
+  'Wytrzymałość materiałów',
+  'Podstawy automatyki',
+  'Maszyny i urządzenia przeróbki metali',
+  'Teoria mechanizmów i maszyn',
   'Informatyka',
-  'Mechanika',
   'Systemy wizyjne',
-];
+].sort();
 
 function getStyles(field, contains, theme) {
   return {

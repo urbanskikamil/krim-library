@@ -16,7 +16,7 @@ const categories = [
   {label: 'Nazwa', key: 'title'},
   {label: 'Dotyczy', key: 'field'},
   {label: 'Autor', key: 'author'},
-  {label: 'Promotor', key: 'Supervisor'},
+  {label: 'Promotor', key: 'supervisor'},
 ]
 
 const types = [
@@ -51,17 +51,17 @@ class ThesisDocuments extends Component {
   }
 
   fields = [
-    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
-    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
-    {id:'supervisor', label: 'Promotor', value: this.state.supervisor, 
-    change: this.handleSupervisorChange},
+    {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
+    {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
+    {id: 'supervisor', label: 'Promotor', change: 'handleSupervisorChange'},
   ]
 
   refreshData = () => {
     axios.get('/documents/thesis')
-    .then(response => {
-      this.setState({documentsData: response.data})
-    }).then(console.log('Data refreshed'))
+      .then(response => {
+        console.log(response.data)
+        this.setState({documentsData: response.data})
+      }).then(console.log('Data refreshed'))
   }
 
   componentDidMount () {
@@ -103,28 +103,55 @@ class ThesisDocuments extends Component {
     
     const { documentType, title, contains, author, supervisor, file } = this.state
 
-      if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
-        this.setState({
-          alertContent: 'Proszę wypełnić wszystkie pola',
-          severity: 'warning', 
-          snackBarAlertSuccess: true
-        })
-      else{
-        this.setState({loading: true})
-  
-        axios.post('/documents/thesis', {
-          id: uuid(),
-          type: documentType,
-          title: title,
-          field: contains.join(', '),
-          author: author,
-          supervisor: supervisor,
-          addedAt: moment(),
-          file: file.name
-        })
-          .then(response => {
-            console.log(response)
+    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
+      this.setState({
+        alertContent: 'Proszę wypełnić wszystkie pola',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
+    else{
+      this.setState({loading: true})
+
+      axios.post('/documents/thesis', {
+        id: uuid(),
+        type: documentType,
+        title: title,
+        field: contains.join(', '),
+        author: author,
+        supervisor: supervisor,
+        addedAt: moment(),
+        file: file.name
+      })
+        .then(response => {
+          console.log(response)
+          setTimeout(() => this.setState({
+            dialogOpen: false,
+            loading: false,
+            title: '',
+            author: '',
+            supervisor: '',
+            documentType: '',
+            contains: [],
+            file: ''
+          }), 2000)
+          if (response.status < 200 || response.status > 299) {
             setTimeout(() => this.setState({
+              alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
+              severity: 'error', 
+              snackBarAlertSuccess: true
+            }), 2000)
+          }
+          else {
+            setTimeout(() => this.setState({
+              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+              severity: 'success', 
+              snackBarAlertSuccess: true
+            }), 2000)         
+          }
+        })
+        .catch((err) => {
+          if(err.message === 'Network Error') {
+            this.setState({
               dialogOpen: false,
               loading: false,
               title: '',
@@ -132,42 +159,15 @@ class ThesisDocuments extends Component {
               supervisor: '',
               documentType: '',
               contains: [],
-              file: ''
-            }), 2000)
-            if (response.status < 200 || response.status > 299) {
-              setTimeout(() => this.setState({
-                alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
-                severity: 'error', 
-                snackBarAlertSuccess: true
-              }), 2000)
-            }
-            else {
-              setTimeout(() => this.setState({
-                alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
-                severity: 'success', 
-                snackBarAlertSuccess: true
-              }), 2000)         
-            }
-          })
-          .catch((err) => {
-            if(err.message === 'Network Error') {
-              this.setState({
-                dialogOpen: false,
-                loading: false,
-                title: '',
-                author: '',
-                supervisor: '',
-                documentType: '',
-                contains: [],
-                file: '',
-                alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
-                severity: 'error', 
-                snackBarAlertSuccess: true
-              })   
-            } 
-          })
-        setTimeout(() => this.refreshData(), 1000)
-      }
+              file: '',
+              alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
+              severity: 'error', 
+              snackBarAlertSuccess: true
+            })   
+          } 
+        })
+      setTimeout(() => this.refreshData(), 1000)
+    }
   }
 
   handleDeleteRecord = () => {
@@ -207,7 +207,7 @@ class ThesisDocuments extends Component {
     // axios.get('/documents/thesis/download')
     //   .then(response => {
     //     console.log(response, 'Weszlo')
-      // })
+    // })
   }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
@@ -233,7 +233,6 @@ class ThesisDocuments extends Component {
 
   handleFile = (fileName, id) => {
     this.setState({ [id]: fileName });
-    console.log(this.state[id])
   }
 
   uploadFiles = () => {
@@ -241,9 +240,9 @@ class ThesisDocuments extends Component {
     data.append('file', this.state.file);
 
     axios.put('/documents/thesis/upload/', data)
-    .then(response => console.log(response))
+      .then(response => console.log(response))
     //.then(clearTimeout(timeout))
-    .catch(err => console.log(err))
+      .catch(err => console.log(err))
   };
 
   handleCategoryChange = (event) => { this.setState({category: event.target.value}) }
@@ -365,6 +364,12 @@ class ThesisDocuments extends Component {
           handleFile={this.handleFile}
           fields={this.fields}
           types={types}
+          supervisor={this.state.supervisor}
+          supervisorChange={this.handleSupervisorChange}          
+          title={this.state.title}
+          titleChange={this.handleTitleChange}
+          author={this.state.author}
+          authorChange={this.handleAuthorChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -17,11 +18,11 @@ const DialogWindow = (props) => {
       onClose={props.closed} 
       open={props.dialogStatus} 
     >
-    {props.loading ? 
-      <div className={classes.circularProgress}>
-        <CircularProgress size={60}/>
-      </div> 
-      : <React.Fragment>
+      {props.loading ? 
+        <div className={classes.circularProgress}>
+          <CircularProgress size={60}/>
+        </div> 
+        : <React.Fragment>
           <DialogTitle id="form-dialog-title">Dodaj plik</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -30,11 +31,13 @@ const DialogWindow = (props) => {
             </DialogContentText>
             <InputField 
               author={props.author}
-              authorChange={props.authorChange}
-              supervisor={props.supervisor ? props.supervisor : null}
-              supervisorChange={props.supervisorChange ? props.supervisorChange : null} 
+              handleAuthorChange={props.authorChange}
+              supervisor={props.supervisor ? props.supervisor : ''}
+              handleSupervisorChange={props.supervisorChange ? props.supervisorChange : ''}
+              studiesClass={props.studiesClass ? props.studiesClass : ''}
+              handleStudiesClassChange={props.studiesClassChange ? props.studiesClassChange : ''}
               title={props.title}
-              titleChange={props.titleChange}
+              handleTitleChange={props.titleChange}
               fields={props.fields}
             />
             <TypeField
@@ -68,9 +71,9 @@ const DialogWindow = (props) => {
               onClick={props.closed} 
             >Zamknij
             </Button>
-            </FormControl>
+          </FormControl>
         </React.Fragment>
-    }
+      }
     </Dialog>
   )
 } 
@@ -115,7 +118,8 @@ DialogWindow.propTypes = {
   supervisorChange: PropTypes.func,
   title: PropTypes.string,
   titleChange: PropTypes.func,
-  typeChange: PropTypes.func
+  typeChange: PropTypes.func,
+  fields: PropTypes.array
 };
 
 

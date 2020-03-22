@@ -47,9 +47,8 @@ class External extends Component {
   }
   
   fields = [
-    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
-    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
-    {id:'studiesClass', label: 'Przedmiot', value: this.state.studiesClass, change: this.handleStudiesClassChange},
+    {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
+    {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
   ]
 
   refreshData = () => {
@@ -61,11 +60,6 @@ class External extends Component {
 
   componentDidMount () {
     this.refreshData();
-  }
-
-  componentDidUpdate () {
-    //console.log('did update')
-    //console.log('docData', this.state.documentsData)
   }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
@@ -359,6 +353,10 @@ class External extends Component {
           handleFile={this.handleFile}
           fields={this.fields}
           types={types}
+          title={this.state.title}
+          titleChange={this.handleTitleChange}
+          author={this.state.author}
+          authorChange={this.handleAuthorChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

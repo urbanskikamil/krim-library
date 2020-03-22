@@ -1,3 +1,4 @@
+/* eslint-disable react/no-set-state */
 /* eslint-disable react/jsx-sort-props */
 import React, { Component } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -49,17 +50,16 @@ class Didactics extends Component {
   }
 
   fields = [
-    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
-    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
-    {id:'supervisor', label: 'Promotor', value: this.state.supervisor, 
-    change: this.handleSupervisorChange},
+    {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
+    {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
+    {id:'studiesClass', label: 'Przedmiot', change: 'handleStudiesClassChange'},
   ]
   
   refreshData = () => {
     axios.get('/documents/didactics')
-    .then(response => {
-      this.setState({documentsData: response.data})
-    }).then(console.log('Data refreshed'))
+      .then(response => {
+        this.setState({documentsData: response.data})
+      }).then(console.log('Data refreshed'))
   }
 
   componentDidMount () {
@@ -101,28 +101,55 @@ class Didactics extends Component {
     
     const { documentType, title, contains, author, studiesClass, file } = this.state
 
-      if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
-        this.setState({
-          alertContent: 'Proszę wypełnić wszystkie pola',
-          severity: 'warning', 
-          snackBarAlertSuccess: true
-        })
-      else{
-        this.setState({loading: true})
-  
-        axios.post('/documents/didactics', {
-          id: uuid(),
-          type: documentType,
-          title: title,
-          field: contains.join(', '),
-          author: author,
-          studiesClass: studiesClass,
-          addedAt: moment(),
-          file: file.name
-        })
-          .then(response => {
-            console.log(response)
+    if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
+      this.setState({
+        alertContent: 'Proszę wypełnić wszystkie pola',
+        severity: 'warning', 
+        snackBarAlertSuccess: true
+      })
+    else{
+      this.setState({loading: true})
+
+      axios.post('/documents/didactics', {
+        id: uuid(),
+        type: documentType,
+        title: title,
+        field: contains.join(', '),
+        author: author,
+        studiesClass: studiesClass,
+        addedAt: moment(),
+        file: file.name
+      })
+        .then(response => {
+          console.log(response)
+          setTimeout(() => this.setState({
+            dialogOpen: false,
+            loading: false,
+            title: '',
+            author: '',
+            studiesClass: '',
+            documentType: '',
+            contains: [],
+            file: ''
+          }), 2000)
+          if (response.status < 200 || response.status > 299) {
             setTimeout(() => this.setState({
+              alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
+              severity: 'error', 
+              snackBarAlertSuccess: true
+            }), 2000)
+          }
+          else {
+            setTimeout(() => this.setState({
+              alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
+              severity: 'success', 
+              snackBarAlertSuccess: true
+            }), 2000)         
+          }
+        })
+        .catch((err) => {
+          if(err.message === 'Network Error') {
+            this.setState({
               dialogOpen: false,
               loading: false,
               title: '',
@@ -130,42 +157,15 @@ class Didactics extends Component {
               studiesClass: '',
               documentType: '',
               contains: [],
-              file: ''
-            }), 2000)
-            if (response.status < 200 || response.status > 299) {
-              setTimeout(() => this.setState({
-                alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
-                severity: 'error', 
-                snackBarAlertSuccess: true
-              }), 2000)
-            }
-            else {
-              setTimeout(() => this.setState({
-                alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
-                severity: 'success', 
-                snackBarAlertSuccess: true
-              }), 2000)         
-            }
-          })
-          .catch((err) => {
-            if(err.message === 'Network Error') {
-              this.setState({
-                dialogOpen: false,
-                loading: false,
-                title: '',
-                author: '',
-                studiesClass: '',
-                documentType: '',
-                contains: [],
-                file: '',
-                alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
-                severity: 'error', 
-                snackBarAlertSuccess: true
-              })   
-            } 
-          })
-        setTimeout(() => this.refreshData(), 1000)
-      }
+              file: '',
+              alertContent: 'Wystąpił problem z siecią, proszę spróbować ponownie',
+              severity: 'error', 
+              snackBarAlertSuccess: true
+            })   
+          } 
+        })
+      setTimeout(() => this.refreshData(), 1000)
+    }
   }
 
   handleDeleteRecord = () => {
@@ -205,7 +205,7 @@ class Didactics extends Component {
     // axios.get('/documents/Didactics/download')
     //   .then(response => {
     //     console.log(response, 'Weszlo')
-      // })
+    // })
   }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
@@ -239,9 +239,9 @@ class Didactics extends Component {
     data.append('file', this.state.file);
 
     axios.put('/documents/didactics/upload/', data)
-    .then(response => console.log(response))
+      .then(response => console.log(response))
     //.then(clearTimeout(timeout))
-    .catch(err => console.log(err))
+      .catch(err => console.log(err))
   };
 
   handleCategoryChange = (event) => { this.setState({category: event.target.value}) }
@@ -363,6 +363,12 @@ class Didactics extends Component {
           handleFile={this.handleFile}
           fields={this.fields}
           types={types}
+          studiesClass={this.state.studiesClass}
+          studiesClassChange={this.handleStudiesClassChange}          
+          title={this.state.title}
+          titleChange={this.handleTitleChange}
+          author={this.state.author}
+          authorChange={this.handleAuthorChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

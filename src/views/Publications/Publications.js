@@ -46,8 +46,8 @@ class Publications extends Component {
   }
   
   fields = [
-    {id:'title', label: 'Tytuł dokumentu', value: this.state.title, change: this.handleTitleChange},
-    {id:'author', label: 'Autor', value: this.state.author, change: this.handleAuthorChange},
+    {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
+    {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
   ]
 
   refreshData = () => {
@@ -59,11 +59,6 @@ class Publications extends Component {
 
   componentDidMount () {
     this.refreshData();
-  }
-
-  componentDidUpdate () {
-    //console.log('did update')
-    //console.log('docData', this.state.documentsData)
   }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
@@ -344,8 +339,6 @@ class Publications extends Component {
           />
         </div>
         <DialogWindow
-          author={this.state.author}
-          authorChange={this.handleAuthorChange}
           closed={this.handleDialogClose}
           contains={this.state.contains}
           containsChange={this.handleContainsChange}
@@ -353,14 +346,16 @@ class Publications extends Component {
           documentType={this.state.documentType}
           maxWidth={this.state.maxWidth}
           submited={(event) => this.handleSubmit(event)}
-          title={this.state.title}
-          titleChange={this.handleTitleChange}
           typeChange={(event) => this.handleTypeChange(event)}
           loading={this.state.loading}
           chosed={event => this.handleFileChosed(event)}
           handleFile={this.handleFile}
           fields={this.fields}
           types={types}
+          title={this.state.title}
+          titleChange={this.handleTitleChange}
+          author={this.state.author}
+          authorChange={this.handleAuthorChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}
