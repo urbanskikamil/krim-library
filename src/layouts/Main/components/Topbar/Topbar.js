@@ -42,24 +42,28 @@ const Topbar = props => {
           </div>
         </RouterLink>
         <div className={classes.flexGrow} />
-        <Hidden mdDown>
-          <RouterLink to="/sign-in">
-            <IconButton
-              className={classes.signOutButton}
-              color="inherit"
-            >
-              <InputIcon />
-            </IconButton>
-          </RouterLink>
-        </Hidden>
-        <Hidden lgUp>
-          <IconButton
-            color="inherit"
-            onClick={onSidebarOpen}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Hidden>
+        { props.disableLogout ? null :
+          <React.Fragment>
+            <Hidden mdDown>
+              <RouterLink to="/sign-in">
+                <IconButton
+                  className={classes.signOutButton}
+                  color="inherit"
+                >
+                  <InputIcon />
+                </IconButton>
+              </RouterLink>
+            </Hidden>
+            <Hidden lgUp>
+              <IconButton
+                color="inherit"
+                onClick={onSidebarOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Hidden>
+          </React.Fragment>
+        }
       </Toolbar>
     </AppBar>
   );

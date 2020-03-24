@@ -10,39 +10,38 @@ import {
   TextField,
   Link,
   FormHelperText,
-  Checkbox,
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const schema = {
   firstName: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     length: {
       maximum: 32
     }
   },
   lastName: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     length: {
       maximum: 32
     }
   },
   email: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     email: true,
     length: {
       maximum: 64
     }
   },
   password: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     length: {
       maximum: 128
     }
   },
   policy: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     checked: true
   }
 };
@@ -55,31 +54,31 @@ const useStyles = makeStyles(theme => ({
   grid: {
     height: '100%'
   },
-  quoteContainer: {
+  descriptionContainer: {
     [theme.breakpoints.down('md')]: {
       display: 'none'
     }
   },
-  quote: {
+  description: {
     backgroundColor: theme.palette.neutral,
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
+    backgroundImage: 'url(/images/architect2.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
   },
-  quoteInner: {
+  descriptionInner: {
     textAlign: 'center',
     flexBasis: '600px'
   },
-  quoteText: {
+  descriptionText: {
     color: theme.palette.white,
     fontWeight: 300
   },
-  name: {
+  instructionText: {
     marginTop: theme.spacing(3),
     color: theme.palette.white
   },
@@ -126,14 +125,6 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginTop: theme.spacing(2)
-  },
-  policy: {
-    marginTop: theme.spacing(1),
-    display: 'flex',
-    alignItems: 'center'
-  },
-  policyCheckbox: {
-    marginLeft: '-14px'
   },
   signUpButton: {
     margin: theme.spacing(2, 0)
@@ -204,29 +195,14 @@ const SignUp = props => {
           item
           lg={5}
         >
-          <div className={classes.quote}>
-            <div className={classes.quoteInner}>
+          <div className={classes.description}>
+            <div className={classes.descriptionInner}>
               <Typography
-                className={classes.quoteText}
+                className={classes.descriptionText}
                 variant="h1"
               >
-                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
-                they sold out High Life.
+                Zarejestruj się, aby korzystać z Biblioteki Katedry Robotyki i Mechatroniki.
               </Typography>
-              <div className={classes.person}>
-                <Typography
-                  className={classes.name}
-                  variant="body1"
-                >
-                  Takamaru Ayako
-                </Typography>
-                <Typography
-                  className={classes.bio}
-                  variant="body2"
-                >
-                  Manager at inVision
-                </Typography>
-              </div>
             </div>
           </div>
         </Grid>
@@ -251,13 +227,7 @@ const SignUp = props => {
                   className={classes.title}
                   variant="h2"
                 >
-                  Create new account
-                </Typography>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Use your email to create new account
+                  Zarejestruj się
                 </Typography>
                 <TextField
                   className={classes.textField}
@@ -266,7 +236,7 @@ const SignUp = props => {
                   helperText={
                     hasError('firstName') ? formState.errors.firstName[0] : null
                   }
-                  label="First name"
+                  label="Imię"
                   name="firstName"
                   onChange={handleChange}
                   type="text"
@@ -280,7 +250,7 @@ const SignUp = props => {
                   helperText={
                     hasError('lastName') ? formState.errors.lastName[0] : null
                   }
-                  label="Last name"
+                  label="Nazwisko"
                   name="lastName"
                   onChange={handleChange}
                   type="text"
@@ -294,7 +264,7 @@ const SignUp = props => {
                   helperText={
                     hasError('email') ? formState.errors.email[0] : null
                   }
-                  label="Email address"
+                  label="Adres email"
                   name="email"
                   onChange={handleChange}
                   type="text"
@@ -308,38 +278,13 @@ const SignUp = props => {
                   helperText={
                     hasError('password') ? formState.errors.password[0] : null
                   }
-                  label="Password"
+                  label="Hasło"
                   name="password"
                   onChange={handleChange}
                   type="password"
                   value={formState.values.password || ''}
                   variant="outlined"
                 />
-                <div className={classes.policy}>
-                  <Checkbox
-                    checked={formState.values.policy || false}
-                    className={classes.policyCheckbox}
-                    color="primary"
-                    name="policy"
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    className={classes.policyText}
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    I have read the{' '}
-                    <Link
-                      color="primary"
-                      component={RouterLink}
-                      to="#"
-                      underline="always"
-                      variant="h6"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </Typography>
-                </div>
                 {hasError('policy') && (
                   <FormHelperText error>
                     {formState.errors.policy[0]}
@@ -354,19 +299,19 @@ const SignUp = props => {
                   type="submit"
                   variant="contained"
                 >
-                  Sign up now
+                  Zarejestruj
                 </Button>
                 <Typography
                   color="textSecondary"
                   variant="body1"
                 >
-                  Have an account?{' '}
+                  Masz juz konto?{' '}
                   <Link
                     component={RouterLink}
                     to="/sign-in"
                     variant="h6"
                   >
-                    Sign in
+                    Zaloguj się!
                   </Link>
                 </Typography>
               </form>

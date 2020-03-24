@@ -6,7 +6,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
-  CardActions,
+  //CardActions,
   CardContent,
   Checkbox,
   Table,
@@ -14,7 +14,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination
+  //TablePagination
 } from '@material-ui/core';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -46,7 +46,7 @@ const DocumentsTable = props => {
 
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
+  //const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
     const { documentsData } = props;
@@ -83,13 +83,13 @@ const DocumentsTable = props => {
     findSelected(newSelectedUsers)
   };
 
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
+  // const handlePageChange = (event, page) => {
+  //   setPage(page);
+  // };
 
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
+  // const handleRowsPerPageChange = event => {
+  //   setRowsPerPage(event.target.value);
+  // };
 
   return (
     <Card

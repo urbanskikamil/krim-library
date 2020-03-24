@@ -6,25 +6,21 @@ import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   Button,
-  IconButton,
   TextField,
   Link,
   Typography
 } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
-import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
 const schema = {
   email: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     email: true,
     length: {
       maximum: 64
     }
   },
   password: {
-    presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: '- pole wymagane' },
     length: {
       maximum: 128
     }
@@ -39,31 +35,31 @@ const useStyles = makeStyles(theme => ({
   grid: {
     height: '100%'
   },
-  quoteContainer: {
+  descriptionContainer: {
     [theme.breakpoints.down('md')]: {
       display: 'none'
     }
   },
-  quote: {
+  description: {
     backgroundColor: theme.palette.neutral,
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(/images/auth.jpg)',
+    backgroundImage: 'url(/images/architect2.jpg)',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
   },
-  quoteInner: {
+  descriptionInner: {
     textAlign: 'center',
     flexBasis: '600px'
   },
-  quoteText: {
+  descriptionText: {
     color: theme.palette.white,
     fontWeight: 300
   },
-  name: {
+  instructionText: {
     marginTop: theme.spacing(3),
     color: theme.palette.white
   },
@@ -147,10 +143,6 @@ const SignIn = props => {
     }));
   }, [formState.values]);
 
-  const handleBack = () => {
-    history.goBack();
-  };
-
   const handleChange = event => {
     event.persist();
 
@@ -185,31 +177,24 @@ const SignIn = props => {
         container
       >
         <Grid
-          className={classes.quoteContainer}
+          className={classes.descriptionContainer}
           item
           lg={5}
         >
-          <div className={classes.quote}>
-            <div className={classes.quoteInner}>
+          <div className={classes.description}>
+            <div className={classes.descriptionInner}>
               <Typography
-                className={classes.quoteText}
+                className={classes.descriptionText}
                 variant="h1"
               >
-                Hella narwhal Cosby sweater McSweeney's, salvia kitsch before
-                they sold out High Life.
+                Witaj na stronie biblioteki Katedry Robotyki i Mechatroniki AGH.
               </Typography>
-              <div className={classes.person}>
+              <div className={classes.instruction}>
                 <Typography
-                  className={classes.name}
+                  className={classes.instructionText}
                   variant="body1"
                 >
-                  Takamaru Ayako
-                </Typography>
-                <Typography
-                  className={classes.bio}
-                  variant="body2"
-                >
-                  Manager at inVision
+                  Zaloguj się, aby kontynuować
                 </Typography>
               </div>
             </div>
@@ -222,11 +207,6 @@ const SignIn = props => {
           xs={12}
         >
           <div className={classes.content}>
-            <div className={classes.contentHeader}>
-              <IconButton onClick={handleBack}>
-                <ArrowBackIcon />
-              </IconButton>
-            </div>
             <div className={classes.contentBody}>
               <form
                 className={classes.form}
@@ -236,48 +216,7 @@ const SignIn = props => {
                   className={classes.title}
                   variant="h2"
                 >
-                  Sign in
-                </Typography>
-                <Typography
-                  color="textSecondary"
-                  gutterBottom
-                >
-                  Sign in with social media
-                </Typography>
-                <Grid
-                  className={classes.socialButtons}
-                  container
-                  spacing={2}
-                >
-                  <Grid item>
-                    <Button
-                      color="primary"
-                      onClick={handleSignIn}
-                      size="large"
-                      variant="contained"
-                    >
-                      <FacebookIcon className={classes.socialIcon} />
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item>
-                    <Button
-                      onClick={handleSignIn}
-                      size="large"
-                      variant="contained"
-                    >
-                      <GoogleIcon className={classes.socialIcon} />
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Typography
-                  align="center"
-                  className={classes.sugestion}
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  or login with email address
+                  Zaloguj się
                 </Typography>
                 <TextField
                   className={classes.textField}
@@ -286,7 +225,7 @@ const SignIn = props => {
                   helperText={
                     hasError('email') ? formState.errors.email[0] : null
                   }
-                  label="Email address"
+                  label="Adres email"
                   name="email"
                   onChange={handleChange}
                   type="text"
@@ -300,7 +239,7 @@ const SignIn = props => {
                   helperText={
                     hasError('password') ? formState.errors.password[0] : null
                   }
-                  label="Password"
+                  label="Hasło"
                   name="password"
                   onChange={handleChange}
                   type="password"
@@ -316,19 +255,19 @@ const SignIn = props => {
                   type="submit"
                   variant="contained"
                 >
-                  Sign in now
+                  Zaloguj
                 </Button>
                 <Typography
                   color="textSecondary"
                   variant="body1"
                 >
-                  Don't have an account?{' '}
+                  Nie masz jeszcze konta?{' '}
                   <Link
                     component={RouterLink}
                     to="/sign-up"
                     variant="h6"
                   >
-                    Sign up
+                    Zarejestruj się!
                   </Link>
                 </Typography>
               </form>

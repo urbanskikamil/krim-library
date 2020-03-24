@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 
-import { Topbar } from './components';
+import Topbar from '../Main/components/Topbar';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -21,7 +21,7 @@ const Minimal = props => {
 
   return (
     <div className={classes.root}>
-      <Topbar />
+      <Topbar disableLogout />
       <main className={classes.content}>{children}</main>
     </div>
   );

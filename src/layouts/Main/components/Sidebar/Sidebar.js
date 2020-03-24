@@ -73,31 +73,6 @@ const Sidebar = props => {
       href: '/documents/external',
       icon: <LibraryBooks />
     }, 
-    // {
-    //   title: 'Dashboard',
-    //   href: '/dashboardd',
-    //   icon: <Dashboard />
-    // },
-    // {
-    //   title: 'Products',
-    //   href: '/products',
-    //   icon: <ShoppingBasket />
-    // },
-    // {
-    //   title: 'Authentication',
-    //   href: '/sign-in',
-    //   icon: <LockOpen />
-    // },
-    // {
-    //   title: 'Account',
-    //   href: '/account',
-    //   icon: <AccountBox />
-    // },
-    // {
-    //   title: 'Settings',
-    //   href: '/settings',
-    //   icon: <Settings />
-    // }
   ];
 
   return (
