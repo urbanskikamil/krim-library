@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import axios from '../../axios-orders'
+
+import { Alert } from '../../UI'
 import validate from 'validate.js';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -10,9 +13,13 @@ import {
   TextField,
   Link,
   FormHelperText,
-  Typography
+  Typography,
+  CircularProgress,
+  Dialog,
+  Snackbar
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { SettingsBrightnessOutlined } from '@material-ui/icons';
 
 const schema = {
   firstName: {
@@ -40,10 +47,6 @@ const schema = {
       maximum: 128
     }
   },
-  policy: {
-    presence: { allowEmpty: false, message: '- pole wymagane' },
-    checked: true
-  }
 };
 
 const useStyles = makeStyles(theme => ({
@@ -128,6 +131,20 @@ const useStyles = makeStyles(theme => ({
   },
   signUpButton: {
     margin: theme.spacing(2, 0)
+  },
+  circularProgress: {
+    width: '338px',
+    height: '158px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  successMessage: {
+    padding: '30px', 
+    textAlign: 'center'
+  },
+  redirectMessage: {
+    marginTop: '20px'
   }
 }));
 
@@ -142,6 +159,17 @@ const SignUp = props => {
     touched: {},
     errors: {}
   });
+
+  const [loading, setLoading] = useState(false)
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
+  const [signed, setSigned] = useState(false)
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBarOpen(false)
+  }
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
@@ -173,12 +201,25 @@ const SignUp = props => {
   };
 
   const handleBack = () => {
-    history.goBack();
+    history.push('/sign-in')
   };
 
   const handleSignUp = event => {
     event.preventDefault();
-    history.push('/');
+
+    setLoading(true)
+      axios.post('/login/sign-up', formState.values)
+      .then(response => {
+        const emailExist = response.data.emailExist
+        if (emailExist) {
+          setLoading(false)
+          setSnackBarOpen(true)
+        }
+        else {
+          setSigned(true)
+          setTimeout(() => history.push('/sign-in'), 5000)
+        }
+      })
   };
 
   const hasError = field =>
@@ -186,21 +227,11 @@ const SignUp = props => {
 
   return (
     <div className={classes.root}>
-      <Grid
-        className={classes.grid}
-        container
-      >
-        <Grid
-          className={classes.quoteContainer}
-          item
-          lg={5}
-        >
+      <Grid className={classes.grid} container>
+        <Grid className={classes.quoteContainer} item lg={5}>
           <div className={classes.description}>
             <div className={classes.descriptionInner}>
-              <Typography
-                className={classes.descriptionText}
-                variant="h1"
-              >
+              <Typography className={classes.descriptionText} variant="h1">
                 Zarejestruj się, aby korzystać z Biblioteki Katedry Robotyki i Mechatroniki.
               </Typography>
             </div>
@@ -219,14 +250,8 @@ const SignUp = props => {
               </IconButton>
             </div>
             <div className={classes.contentBody}>
-              <form
-                className={classes.form}
-                onSubmit={handleSignUp}
-              >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
-                >
+              <form className={classes.form} onSubmit={handleSignUp}>
+                <Typography className={classes.title} variant="h2">
                   Zarejestruj się
                 </Typography>
                 <TextField
@@ -301,11 +326,8 @@ const SignUp = props => {
                 >
                   Zarejestruj
                 </Button>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Masz juz konto?{' '}
+                <Typography color="textSecondary" variant="body1">
+                  Masz już konto?{' '}
                   <Link
                     component={RouterLink}
                     to="/sign-in"
@@ -319,6 +341,31 @@ const SignUp = props => {
           </div>
         </Grid>
       </Grid>
+        <Dialog open={loading} onClose={() => setLoading(false)}>
+          <div className={classes.circularProgress}>
+            { signed ? 
+                <div className={classes.successMessage}>
+                  <Typography color="textSecondary" variant="body1">
+                    Gratulacje! Konto zostało założone.
+                  </Typography> 
+                  <Typography className={classes.redirectMessage} color="textSecondary" variant="body2">
+                    Za moment zostaniesz przekierowany na stronę logowania'                  
+                  </Typography> 
+                </div>
+              : <CircularProgress size={60}/> 
+            }            
+          </div>
+        </Dialog> 
+        <Snackbar 
+          open={snackBarOpen} 
+          autoHideDuration={6000} 
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          onClose={handleAlertClose}
+        >
+          <Alert onClose={handleAlertClose} severity='error'>
+            Podany adres email już istnieje! Proszę użyć innego adresu
+          </Alert>
+        </Snackbar>
     </div>
   );
 };

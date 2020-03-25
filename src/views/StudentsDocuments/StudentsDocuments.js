@@ -48,6 +48,7 @@ class StudentsDocuments extends Component {
     filtered: false,
     filterRequests: [],
     showNothing: false,
+    loadingData: false,
   }
   
   fields = [
@@ -57,9 +58,11 @@ class StudentsDocuments extends Component {
   ]
 
   refreshData = () => {
+    this.setState({ loadingData: true })
+
     axios.get('/documents/students')
       .then(response => {
-        this.setState({documentsData: response.data})
+        this.setState({loadingData: false, documentsData: response.data})
       }).then(console.log('Data refreshed'))
   }
 
@@ -349,6 +352,7 @@ class StudentsDocuments extends Component {
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload}
             categories={categories}
+            loadingData={this.state.loadingData}
           />
         </div>
         <DialogWindow

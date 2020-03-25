@@ -44,6 +44,7 @@ class External extends Component {
     filtered: false,
     filterRequests: [],
     showNothing: false,
+    loadingData: false,
   }
   
   fields = [
@@ -52,9 +53,11 @@ class External extends Component {
   ]
 
   refreshData = () => {
+    this.setState({ loadingData: true })
+
     axios.get('/documents/external')
     .then(response => {
-      this.setState({documentsData: response.data})
+      this.setState({loadingData: false, documentsData: response.data})
     }).then(console.log('Data refreshed'))
   }
 
@@ -337,6 +340,7 @@ class External extends Component {
             findSelected={(records) => this.handleFindRecordId(records)}
             fileDownload={this.handleFileDownload} 
             categories={categories}
+            loadingData={this.state.loadingData}
           />
         </div>
         <DialogWindow

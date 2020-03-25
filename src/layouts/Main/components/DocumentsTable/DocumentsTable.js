@@ -14,6 +14,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  CircularProgress,
   //TablePagination
 } from '@material-ui/core';
 
@@ -36,11 +37,18 @@ const useStyles = makeStyles(theme => ({
   },
   actions: {
     justifyContent: 'flex-end'
-  }
+  },
+  circularProgress: {
+    width: '100%',
+    height: '138px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
+}
 }));
 
 const DocumentsTable = props => {
-  const { className, documentsData, fileDownload, findSelected, categories, ...rest } = props;
+  const { className, documentsData, fileDownload, findSelected, categories, loadingData, ...rest } = props;
 
   const classes = useStyles();
 
@@ -145,6 +153,11 @@ const DocumentsTable = props => {
                 ))}
               </TableBody>
             </Table>
+            { loadingData ? 
+                <div className={classes.circularProgress}>
+                  <CircularProgress size={40}/> 
+                </div>
+                : null }
           </div>
         </PerfectScrollbar>
       </CardContent>

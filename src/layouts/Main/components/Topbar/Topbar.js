@@ -21,26 +21,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Topbar = props => {
-  const { className, onSidebarOpen, ...rest } = props;
+  const { className, onSidebarOpen, disableLogout, disableLink, ...rest } = props;
 
   const classes = useStyles();
 
+  const logo = (
+    <div style={{display: 'flex', alignItems: 'center'}}>
+      <img 
+        alt="Logo"
+        src="/images/logos/1-0.png"
+        style={{maxWidth: '50px'}}
+      />
+      <div style={{display: 'inline', color: 'white', fontSize: '24px', marginLeft: '10px'}}>Biblioteka KRiM</div>
+    </div>
+  )
   return (
     <AppBar
       {...rest}
       className={clsx(classes.root, className)}
     >
       <Toolbar>
-        <RouterLink to="/">
-          <div style={{display: 'flex', alignItems: 'center'}}>
-            <img 
-              alt="Logo"
-              src="/images/logos/1-0.png"
-              style={{maxWidth: '50px'}}
-            />
-            <div style={{display: 'inline', color: 'white', fontSize: '24px', marginLeft: '10px'}}>Biblioteka KRiM</div>
-          </div>
-        </RouterLink>
+        { !disableLink ? 
+          <RouterLink to="/" >
+            {logo}
+          </RouterLink>
+          : logo 
+        }
         <div className={classes.flexGrow} />
         { props.disableLogout ? null :
           <React.Fragment>

@@ -21,7 +21,7 @@ const Minimal = props => {
 
   return (
     <div className={classes.root}>
-      <Topbar disableLogout />
+      <Topbar disableLogout disableLink />
       <main className={classes.content}>{children}</main>
     </div>
   );

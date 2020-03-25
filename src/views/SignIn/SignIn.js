@@ -8,8 +8,14 @@ import {
   Button,
   TextField,
   Link,
-  Typography
+  Typography,
+  Dialog,
+  Snackbar,
+  CircularProgress,
 } from '@material-ui/core';
+
+import { Alert } from '../../UI'
+import axios from '../../axios-orders'
 
 const schema = {
   email: {
@@ -25,6 +31,173 @@ const schema = {
       maximum: 128
     }
   }
+};
+
+const SignIn = props => {
+  const { history } = props;
+
+  const classes = useStyles();
+  const [loading, setLoading] = useState(false)
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
+  const [snackBarMessage, setSnackBarMessage] = useState(null)
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBarOpen(false)
+  }
+
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: {},
+    touched: {},
+    errors: {}
+  });
+
+  useEffect(() => {
+    const errors = validate(formState.values, schema);
+
+    setFormState(formState => ({
+      ...formState,
+      isValid: errors ? false : true,
+      errors: errors || {}
+    }));
+  }, [formState.values]);
+
+  const handleChange = event => {
+    event.persist();
+
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]:
+          event.target.type === 'checkbox'
+            ? event.target.checked
+            : event.target.value
+      },
+      touched: {
+        ...formState.touched,
+        [event.target.name]: true
+      }
+    }));
+  };
+
+  const handleSignIn = event => {
+    event.preventDefault();
+
+    setLoading(true)
+    axios.post('/login/sign-in', formState.values)
+      .then(response => {
+        setLoading(false)
+        if (response.data.emailAuthenticated) {
+          if (response.data.validPassword) {
+            return history.push('/');
+          }
+          setSnackBarOpen(true)
+          return setSnackBarMessage(`Niepoprawne hasło dla użytkownika: ${formState.values.email}. Spróbuj ponownie`)
+        }
+        setSnackBarOpen(true)
+        return setSnackBarMessage(`Błędny adres email. Spróbuj ponownie`)
+      })
+      .catch(err => console.log(err))
+  };
+
+  const hasError = field =>
+    formState.touched[field] && formState.errors[field] ? true : false;
+
+  return (
+    <div className={classes.root}>
+      <Grid className={classes.grid} container>
+        <Grid className={classes.descriptionContainer} item lg={5}>
+          <div className={classes.description}>
+            <div className={classes.descriptionInner}>
+              <Typography className={classes.descriptionText} variant="h1">
+                Witaj na stronie biblioteki Katedry Robotyki i Mechatroniki AGH.
+              </Typography>
+              <div className={classes.instruction}>
+                <Typography className={classes.instructionText} variant="body1">
+                  Zaloguj się, aby kontynuować
+                </Typography>
+              </div>
+            </div>
+          </div>
+        </Grid>
+        <Grid className={classes.content} item lg={7} xs={12}>
+          <div className={classes.content}>
+            <div className={classes.contentBody}>
+              <form className={classes.form} onSubmit={handleSignIn}>
+                <Typography className={classes.title} variant="h2">
+                  Zaloguj się
+                </Typography>
+                <TextField
+                  className={classes.textField}
+                  error={hasError('email')}
+                  fullWidth
+                  helperText={
+                    hasError('email') ? formState.errors.email[0] : null
+                  }
+                  label="Adres email"
+                  name="email"
+                  onChange={handleChange}
+                  type="text"
+                  value={formState.values.email || ''}
+                  variant="outlined"
+                />
+                <TextField
+                  className={classes.textField}
+                  error={hasError('password')}
+                  fullWidth
+                  helperText={
+                    hasError('password') ? formState.errors.password[0] : null
+                  }
+                  label="Hasło"
+                  name="password"
+                  onChange={handleChange}
+                  type="password"
+                  value={formState.values.password || ''}
+                  variant="outlined"
+                />
+                <Button
+                  className={classes.signInButton}
+                  color="primary"
+                  disabled={!formState.isValid}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                >
+                  Zaloguj
+                </Button>
+                <Typography color="textSecondary" variant="body1">
+                  Nie masz jeszcze konta?{' '}
+                  <Link component={RouterLink} to="/sign-up" variant="h6">
+                    Zarejestruj się!
+                  </Link>
+                </Typography>
+              </form>
+            </div>
+          </div>
+        </Grid>
+      </Grid>
+      <Dialog open={loading} onClose={() => setLoading(false)}>
+          <div className={classes.circularProgress}>
+            <CircularProgress size={60}/> 
+          </div>
+        </Dialog> 
+        <Snackbar 
+          open={snackBarOpen} 
+          autoHideDuration={6000} 
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          onClose={handleAlertClose}
+        >
+          <Alert onClose={handleAlertClose} severity='error'>
+            {snackBarMessage}
+          </Alert>
+        </Snackbar>
+    </div>
+  );
 };
 
 const useStyles = makeStyles(theme => ({
@@ -118,166 +291,15 @@ const useStyles = makeStyles(theme => ({
   },
   signInButton: {
     margin: theme.spacing(2, 0)
-  }
+  },
+  circularProgress: {
+    width: '338px',
+    height: '158px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 }));
-
-const SignIn = props => {
-  const { history } = props;
-
-  const classes = useStyles();
-
-  const [formState, setFormState] = useState({
-    isValid: false,
-    values: {},
-    touched: {},
-    errors: {}
-  });
-
-  useEffect(() => {
-    const errors = validate(formState.values, schema);
-
-    setFormState(formState => ({
-      ...formState,
-      isValid: errors ? false : true,
-      errors: errors || {}
-    }));
-  }, [formState.values]);
-
-  const handleChange = event => {
-    event.persist();
-
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        [event.target.name]:
-          event.target.type === 'checkbox'
-            ? event.target.checked
-            : event.target.value
-      },
-      touched: {
-        ...formState.touched,
-        [event.target.name]: true
-      }
-    }));
-  };
-
-  const handleSignIn = event => {
-    event.preventDefault();
-    history.push('/');
-  };
-
-  const hasError = field =>
-    formState.touched[field] && formState.errors[field] ? true : false;
-
-  return (
-    <div className={classes.root}>
-      <Grid
-        className={classes.grid}
-        container
-      >
-        <Grid
-          className={classes.descriptionContainer}
-          item
-          lg={5}
-        >
-          <div className={classes.description}>
-            <div className={classes.descriptionInner}>
-              <Typography
-                className={classes.descriptionText}
-                variant="h1"
-              >
-                Witaj na stronie biblioteki Katedry Robotyki i Mechatroniki AGH.
-              </Typography>
-              <div className={classes.instruction}>
-                <Typography
-                  className={classes.instructionText}
-                  variant="body1"
-                >
-                  Zaloguj się, aby kontynuować
-                </Typography>
-              </div>
-            </div>
-          </div>
-        </Grid>
-        <Grid
-          className={classes.content}
-          item
-          lg={7}
-          xs={12}
-        >
-          <div className={classes.content}>
-            <div className={classes.contentBody}>
-              <form
-                className={classes.form}
-                onSubmit={handleSignIn}
-              >
-                <Typography
-                  className={classes.title}
-                  variant="h2"
-                >
-                  Zaloguj się
-                </Typography>
-                <TextField
-                  className={classes.textField}
-                  error={hasError('email')}
-                  fullWidth
-                  helperText={
-                    hasError('email') ? formState.errors.email[0] : null
-                  }
-                  label="Adres email"
-                  name="email"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.email || ''}
-                  variant="outlined"
-                />
-                <TextField
-                  className={classes.textField}
-                  error={hasError('password')}
-                  fullWidth
-                  helperText={
-                    hasError('password') ? formState.errors.password[0] : null
-                  }
-                  label="Hasło"
-                  name="password"
-                  onChange={handleChange}
-                  type="password"
-                  value={formState.values.password || ''}
-                  variant="outlined"
-                />
-                <Button
-                  className={classes.signInButton}
-                  color="primary"
-                  disabled={!formState.isValid}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                >
-                  Zaloguj
-                </Button>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Nie masz jeszcze konta?{' '}
-                  <Link
-                    component={RouterLink}
-                    to="/sign-up"
-                    variant="h6"
-                  >
-                    Zarejestruj się!
-                  </Link>
-                </Typography>
-              </form>
-            </div>
-          </div>
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
 
 SignIn.propTypes = {
   history: PropTypes.object
