@@ -13,7 +13,9 @@ import {
   Publications as PublicationsView,
   StudentsDocuments as StudentsDocumentsView,
   Didactics as DidacticsView,
-  External as ExternalView
+  External as ExternalView,
+  Admin as AdminView,
+  Access as AccessView
 } from './views';
 
 const Routes = () => {
@@ -59,6 +61,18 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/account"
+      />
+      <RouteWithLayout
+        component={AdminView}
+        exact
+        layout={MainLayout}
+        path="/admin"
+      />
+      <RouteWithLayout
+        component={AccessView}
+        exact
+        layout={MainLayout}
+        path="/access"
       />
       <RouteWithLayout
         component={SignUpView}

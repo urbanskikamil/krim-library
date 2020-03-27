@@ -14,7 +14,9 @@ import {
   Work,
   School,
   MenuBook,
-  LibraryBooks
+  LibraryBooks,
+  Person,
+  LockOpen
 } from '@material-ui/icons'
 
 import { Profile, SidebarNav } from './components';
@@ -72,6 +74,16 @@ const Sidebar = props => {
       title: 'Materiały zewnętrzne',
       href: '/documents/external',
       icon: <LibraryBooks />
+    }, 
+    {
+      title: 'Uzyskaj dostęp',
+      href: '/access',
+      icon: <LockOpen />
+    }, 
+    {
+      title: 'Panel administratora',
+      href: '/admin',
+      icon: <Person />
     }, 
   ];
 
