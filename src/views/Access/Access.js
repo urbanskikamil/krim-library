@@ -1,20 +1,20 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import {
-  Select,
-  MenuItem,
-  FormControl,
-  Button
+  Button,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography
 } from '@material-ui/core';
 import Icon from '@material-ui/core/Icon';
+import axios from 'axios-orders'
 
 
 const useStyles = makeStyles(theme => ({
@@ -37,28 +37,40 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
 const rows = [
-  { type: 'Użytkownik autoryzowany', description: 'Użytkownik autoryzowany ma prawo do pobierania dokumentów' },
-  { type: 'Edytor', description: 'Edytor ma prawo do pobierania dokumentów, dodawania nowych oraz usuwania tych dodanych przez siebie' },
-  { type: 'Administrator', description: 'Administrator ma prawo do pobierania dokumentów, dodawania nowych, usuwania dokumentów oraz przyznawania dostępu innym użytkownikom' },
-  // createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  // createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  // createData('Eclair', 262, 16.0, 24, 6.0),
-  // createData('Cupcake', 305, 3.7, 67, 4.3),
-  // createData('Gingerbread', 356, 16.0, 49, 3.9),
+  { type: 'Użytkownik autoryzowany', description: 'Użytkownik autoryzowany ma prawo do pobierania dokumentów', accessLevel: 1 },
+  { type: 'Edytor', description: 'Edytor ma prawo do pobierania dokumentów, dodawania nowych oraz usuwania tych dodanych przez siebie', accessLevel: 2 },
+  { type: 'Administrator', description: 'Administrator ma prawo do pobierania dokumentów, dodawania nowych, usuwania dokumentów oraz przyznawania dostępu innym użytkownikom', accessLevel: 3 },
 ];
 
-const Access = () => {
+const session = JSON.parse(sessionStorage.getItem('session'))
+
+const Access = (props) => {
+  //const { history } = props;
+
   const classes = useStyles();
-  
-  const handleChange = () => {
-    
+  const [user, setUser] = useState({})
+  const [requestPending, setRequestPending] = useState(false)
+
+  const handleRequest = (type, accessLevel) => {
+    console.log('user', user)
+    axios.post(`/requestAccess/${type}/${accessLevel}`, user)
+    setRequestPending(true)
   }
+
+  useEffect(() => {
+    axios.get(`/requestAccess/check/${session.userEmail}`)
+    .then(response => {
+      setRequestPending(response.data.requestPending)
+    })
+
+    axios.get(`/login/getData/${session.userEmail}`)
+    .then(response => {
+      console.log('user', response.data)
+      setUser(response.data)
+    })
+  }, [])
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper}>
@@ -82,31 +94,15 @@ const Access = () => {
                   {row.type}
                 </TableCell>
                 <TableCell align="left">{row.description}</TableCell>
-                  {/* <FormControl className={classes.formControl}>
-                    <Select
-                      name="access"
-                      type="select"
-                      //value={formState.values.degree || ''}
-                      //onChange={handleChange}
-                    >
-                      <MenuItem value={'Administrator'}>Administrator</MenuItem>
-                      <MenuItem value={'Edytor'}>Edytor</MenuItem>
-                      <MenuItem value={'Użytkownik autoryzowany'}>
-                        Użytkownik autoryzowany
-                      </MenuItem>
-                      <MenuItem value={'Użytkownik nieautoryzowany'}>
-                        Użytkownik nieautoryzowany
-                      </MenuItem>
-                    </Select>
-                  </FormControl> */}
                 <TableCell className={classes.accessCell} align="left">
                   <Button
                     size="small"
+                    disabled={row.accessLevel <= user.accessLevel ? true : requestPending ? true : false }
                     variant="contained"
                     color="primary"
                     className={classes.button}
                     endIcon={<Icon>send</Icon>}
-                    //onClick={}
+                    onClick={() => handleRequest(row.type, row.accessLevel)}
                   >
                     Wyślij
                   </Button>
@@ -120,4 +116,4 @@ const Access = () => {
   );
 }
 
-export default Access
+export default withRouter(Access)

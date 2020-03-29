@@ -53,7 +53,6 @@ const DocumentsTable = props => {
   const classes = useStyles();
 
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   //const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
@@ -127,7 +126,7 @@ const DocumentsTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {documentsData.slice(0, rowsPerPage).map(doc => (
+                {documentsData.map(doc => (
                   <TableRow
                     className={classes.tableRow}
                     hover

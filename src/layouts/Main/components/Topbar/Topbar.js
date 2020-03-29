@@ -7,6 +7,8 @@ import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
 
+//import axios from 'axios-orders'
+
 const useStyles = makeStyles(theme => ({
   root: {
     boxShadow: 'none'
@@ -24,6 +26,12 @@ const Topbar = props => {
   const { className, onSidebarOpen, disableLogout, disableLink, ...rest } = props;
 
   const classes = useStyles();
+
+  const handleLogout = () => {
+    JSON.parse(sessionStorage.getItem('session'))
+    sessionStorage.removeItem('session')
+    //axios.post('/login/logout', session.user)
+  }
 
   const logo = (
     <div style={{display: 'flex', alignItems: 'center'}}>
@@ -51,7 +59,7 @@ const Topbar = props => {
         { props.disableLogout ? null :
           <React.Fragment>
             <Hidden mdDown>
-              <RouterLink to="/sign-in">
+              <RouterLink to="/sign-in" onClick={handleLogout}>
                 <IconButton
                   className={classes.signOutButton}
                   color="inherit"

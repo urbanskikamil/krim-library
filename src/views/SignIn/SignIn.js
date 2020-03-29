@@ -28,6 +28,7 @@ const schema = {
   password: {
     presence: { allowEmpty: false, message: '- pole wymagane' },
     length: {
+      minimum: 6,
       maximum: 128
     }
   }
@@ -90,12 +91,16 @@ const SignIn = props => {
     setLoading(true)
     axios.post('/login/sign-in', formState.values)
       .then(response => {
+        console.log('response',response)
         setLoading(false)
         if (response.data.emailAuthenticated) {
           if (response.data.validPassword) {
+            //sessionStorage.setItem('session', response.data.session)
+            sessionStorage.setItem('session', JSON.stringify(response.data.session))
+            //console.log('session', sessionStorage.getItem('session.user.email'))
             return history.push('/');
           }
-          setSnackBarOpen(true)
+          setSnackBarOpen(true);
           return setSnackBarMessage(`Niepoprawne hasło dla użytkownika: ${formState.values.email}. Spróbuj ponownie`)
         }
         setSnackBarOpen(true)

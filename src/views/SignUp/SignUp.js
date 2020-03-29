@@ -23,7 +23,6 @@ import {
   InputLabel
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { SettingsBrightnessOutlined } from '@material-ui/icons';
 
 const schema = {
   firstName: {
@@ -65,12 +64,6 @@ const schema = {
       message: "musi zawierać conajmniej 6 znaków"
     }
   },
-  // confirmPassword: {
-  //   presence: { allowEmpty: false, message: '- pole wymagane' },
-  //   length: {
-  //     maximum: 128
-  //   },
-  // }
 };
 
 const SignUp = props => {
@@ -133,7 +126,7 @@ const SignUp = props => {
   const handleSignUp = event => {
     event.preventDefault();
     setLoading(true)
-    const newAccount = {...formState.values, access: 'unauthorized'}
+    const newAccount = {...formState.values, access: 'Użytkownik nieautoryzowany', accessLevel: 0}
 
     axios.post('/login/sign-up', newAccount)
     .then(response => {

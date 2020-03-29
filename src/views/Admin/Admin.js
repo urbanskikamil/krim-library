@@ -1,21 +1,19 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import React, { useEffect, useState } from 'react';
 import {
-  Select,
-  MenuItem,
-  FormControl,
   Button,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
   Icon
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
+import axios from 'axios-orders'
 
 
 const useStyles = makeStyles(theme => ({
@@ -33,26 +31,39 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0,
     minWidth: 120,
   },
+  noRequests: {
+    width: '100%',
+    textAlign: 'center',
+    padding: '5%',
+  }
 }));
 
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  { position: 'Kierownik katedry', degree: 'Profesor', firstName: 'Kamil', lastName: 'Urbanski', email: 'kamil@agh.pl', access: 'Administrator' },
-  { position: 'Zastępca kierownika katedry', degree: 'Profesor', firstName: 'Piotr', lastName: 'Kurowski', email: 'kamil@agh.pl', access: 'Edytor' },
-  { position: 'Kierownik katedry', degree: 'Profesor', firstName: 'Krzysztof', lastName: 'Mendrok', email: 'kamil@agh.pl', access: 'Uzytkownik autoryzowany' },
-  { position: 'Doktorant', degree: 'Profesor', firstName: 'Kamil', lastName: 'Urbanski', email: 'kamil@agh.pl', access: 'Uzytkownik nieautoryzowany' },
-];
-
 const Admin = () => {
   const classes = useStyles();
-  
-  const handleChange = () => {
-    
+  const [requests, setRequests] = useState([])
+
+  const refreshData = () => {
+    console.log('weszlo')
+    axios.get('/requestAccess')
+      .then(response => {
+        console.log('requests', response.data)
+        setRequests(response.data)
+      })
   }
+
+  useEffect(() => refreshData(), [])
+
+  const handleDeleteRequest = (email) => {
+    axios.post(`/requestAccess/delete/${email}`)
+    refreshData();
+  }
+
+  const handleAcceptRequest = (email, requestedAccess, accessLevel) => {
+    axios.post(`/requestAccess/accept/${email}/${requestedAccess}/${accessLevel}`)
+    setTimeout(refreshData, 2000)
+  }
+
   return (
     <div className={classes.container}>
       <Paper className={classes.paper}>
@@ -75,8 +86,8 @@ const Admin = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={row.index}>
+            { requests.map((row, index) => (
+              <TableRow key={index}>
                 <TableCell align="left" component="th" scope="row">
                   {row.position}
                 </TableCell>
@@ -84,7 +95,7 @@ const Admin = () => {
                 <TableCell align="left">{row.firstName}</TableCell>
                 <TableCell align="left">{row.lastName}</TableCell>
                 <TableCell align="left">{row.email}</TableCell>
-                <TableCell align="left">{row.access}</TableCell>
+                <TableCell align="left">{row.requestedAccess}</TableCell>
                 <TableCell align="left">
                   <Button
                     size="small"
@@ -92,7 +103,7 @@ const Admin = () => {
                     color="primary"
                     className={classes.button}
                     endIcon={<Icon>send</Icon>}
-                    //onClick={}
+                    onClick={() => handleAcceptRequest(row.email, row.requestedAccess, row.accessLevel)}
                   >
                     Potwierdź
                   </Button>
@@ -104,6 +115,8 @@ const Admin = () => {
                     variant="contained"
                     className={classes.button}
                     startIcon={<Delete />}
+                    onClick={() => handleDeleteRequest(row.email)}
+                    dummy={requests}
                   >
                     Odrzuć
                   </Button>
@@ -112,6 +125,12 @@ const Admin = () => {
             ))}
           </TableBody>
         </Table>
+        {requests.length === 0 ? 
+              <Typography className={classes.noRequests} variant="h4">
+                  Nie ma aktualnie żadnych próśb o uzyskanie dostępu.
+              </Typography>
+              : null
+        } 
       </TableContainer>
     </div>
   );

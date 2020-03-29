@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { Avatar, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
+import axios from 'axios-orders'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,6 +17,10 @@ const useStyles = makeStyles(theme => ({
     height: 60
   },
   name: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  },
+  typo: {
     marginTop: theme.spacing(1)
   }
 }));
@@ -25,12 +29,25 @@ const Profile = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+  const session = JSON.parse(sessionStorage.getItem('session'))
+  console.log('session', session)
 
-  const user = {
-    name: 'Piotr Kurowski',
+  const [user, setUser] = useState({})
+
+  useEffect(() => {
+    axios.get(`/login/getData/${session.userEmail}`)
+      .then(response => {
+        console.log('user', response.data)
+        setUser(response.data)
+      })
+  }, [])
+
+  const userData = {
+    name: `${user.firstName} ${user.lastName}`,
     avatar: 'H',
-    bio: 'Doktor inżynier',
-    faculty: 'Katedra Robotyki i Mechatroniki'
+    degree: user.degree,
+    position: user.position,
+    access: user.access
   };
 
   return (
@@ -38,20 +55,20 @@ const Profile = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
-      <Avatar
-        alt="Person"
-        component={RouterLink}
-        src={user.name[0]}
-        to="/settings"
-      />
-      <Typography
-        className={classes.name}
-        variant="h4"
-      >
-        {user.name}
-      </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
-      <Typography variant="caption">{user.faculty}</Typography>
+      { user.firstName ?
+        <React.Fragment>
+          <Typography
+            className={classes.name}
+            variant="h4"
+          >
+            {userData.name}
+          </Typography>
+          <Typography variant="body2">{userData.degree}</Typography>
+          <Typography variant="caption">{userData.position}</Typography>
+          <Typography className={classes.typo} variant="caption">Poziom dostępu:</Typography>
+          <Typography variant="caption">{userData.access}</Typography>
+        </React.Fragment>
+      : null}
     </div>
   );
 };
