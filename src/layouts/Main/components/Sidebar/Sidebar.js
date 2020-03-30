@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
-
 import {
   //Dashboard,
   // ShoppingBasket,
@@ -16,7 +15,8 @@ import {
   MenuBook,
   LibraryBooks,
   Person,
-  LockOpen
+  LockOpen,
+  ExitToApp
 } from '@material-ui/icons'
 
 import { Profile, SidebarNav } from './components';
@@ -85,7 +85,14 @@ const Sidebar = props => {
       href: '/admin',
       icon: <Person />
     }, 
+    {
+      title: 'Wyloguj',
+      href: '/sign-in',
+      icon: <ExitToApp />
+    }, 
   ];
+
+  
 
   return (
     <Drawer

@@ -231,7 +231,8 @@ class ThesisDocuments extends Component {
     if (reason === 'clickaway') {
       return;
     }
-    this.setState({snackBarAlertSuccess: false})}
+    this.setState({snackBarAlertSuccess: false})
+  }
 
   handleFile = (fileName, id) => {
     this.setState({ [id]: fileName });

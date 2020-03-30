@@ -1,11 +1,12 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/display-name */
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { List, ListItem, Button, colors } from '@material-ui/core';
+import axios from 'axios-orders'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -53,6 +54,18 @@ const SidebarNav = props => {
   const { pages, className, ...rest } = props;
 
   const classes = useStyles();
+  const session = JSON.parse(sessionStorage.getItem('session'))
+  const [user, setUser] = useState({})
+
+  useEffect(() => {
+    if (session) {
+      axios.get(`/login/getData/${session.userEmail}`)
+        .then(response => {
+          console.log('user', response.data)
+          setUser(response.data)
+        })
+    }
+  }, [])
 
   return (
     <List
@@ -69,6 +82,7 @@ const SidebarNav = props => {
             activeClassName={classes.active}
             className={classes.button}
             component={CustomRouterLink}
+            disabled={page.title === 'Panel administratora' && user.accessLevel < 3 ? true : false}
             to={page.href}
           >
             <div className={classes.icon}>{page.icon}</div>

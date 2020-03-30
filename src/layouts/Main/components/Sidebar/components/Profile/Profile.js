@@ -25,6 +25,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const accesses = [
+  {level: 0, description: 'Użytkownik nieautoryzowany'},
+  {level: 1, description: 'Użytkownik autoryzowany'},
+  {level: 2, description: 'Edytor'},
+  {level: 3, description: 'Administrator'},
+]
+
+const findDescription = (accessLevel) => {
+  const accessRow = accesses.find(row => row.level === accessLevel)
+  return accessRow.description
+}
+
 const Profile = props => {
   const { className, ...rest } = props;
 
@@ -34,20 +46,24 @@ const Profile = props => {
 
   const [user, setUser] = useState({})
 
+  
   useEffect(() => {
-    axios.get(`/login/getData/${session.userEmail}`)
-      .then(response => {
-        console.log('user', response.data)
-        setUser(response.data)
-      })
+    if (session) {
+      axios.get(`/login/getData/${session.userEmail}`)
+        .then(response => {
+          console.log('user', response.data)
+          setUser(response.data)
+        })
+    }
   }, [])
+  
 
   const userData = {
     name: `${user.firstName} ${user.lastName}`,
     avatar: 'H',
     degree: user.degree,
     position: user.position,
-    access: user.access
+    access: user.accessLevel
   };
 
   return (
@@ -66,7 +82,7 @@ const Profile = props => {
           <Typography variant="body2">{userData.degree}</Typography>
           <Typography variant="caption">{userData.position}</Typography>
           <Typography className={classes.typo} variant="caption">Poziom dostępu:</Typography>
-          <Typography variant="caption">{userData.access}</Typography>
+          <Typography variant="caption">{findDescription(userData.access)}</Typography>
         </React.Fragment>
       : null}
     </div>

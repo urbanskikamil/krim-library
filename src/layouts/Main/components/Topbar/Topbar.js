@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/styles';
 import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
-
-//import axios from 'axios-orders'
+import axios from 'axios-orders'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,9 +27,9 @@ const Topbar = props => {
   const classes = useStyles();
 
   const handleLogout = () => {
-    JSON.parse(sessionStorage.getItem('session'))
+    const session = JSON.parse(sessionStorage.getItem('session'))
+    axios.get('/login/logout')
     sessionStorage.removeItem('session')
-    //axios.post('/login/logout', session.user)
   }
 
   const logo = (

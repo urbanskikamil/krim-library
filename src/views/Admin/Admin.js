@@ -10,7 +10,8 @@ import {
   TableRow,
   Paper,
   Typography,
-  Icon
+  Icon,
+  CircularProgress
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import axios from 'axios-orders'
@@ -35,6 +36,13 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     textAlign: 'center',
     padding: '5%',
+  },
+  circularProgress: {
+    width: '100%',
+    height: '138px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 }));
 
@@ -42,13 +50,14 @@ const useStyles = makeStyles(theme => ({
 const Admin = () => {
   const classes = useStyles();
   const [requests, setRequests] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const refreshData = () => {
-    console.log('weszlo')
+    setLoading(true)
     axios.get('/requestAccess')
       .then(response => {
-        console.log('requests', response.data)
         setRequests(response.data)
+        setLoading(false)
       })
   }
 
@@ -56,12 +65,16 @@ const Admin = () => {
 
   const handleDeleteRequest = (email) => {
     axios.post(`/requestAccess/delete/${email}`)
-    refreshData();
+      .then(response => {
+        return refreshData();
+      })
   }
 
   const handleAcceptRequest = (email, requestedAccess, accessLevel) => {
     axios.post(`/requestAccess/accept/${email}/${requestedAccess}/${accessLevel}`)
-    setTimeout(refreshData, 2000)
+      .then(response => {
+        return refreshData();
+      })
   }
 
   return (
@@ -116,7 +129,6 @@ const Admin = () => {
                     className={classes.button}
                     startIcon={<Delete />}
                     onClick={() => handleDeleteRequest(row.email)}
-                    dummy={requests}
                   >
                     Odrzuć
                   </Button>
@@ -125,11 +137,16 @@ const Admin = () => {
             ))}
           </TableBody>
         </Table>
-        {requests.length === 0 ? 
-              <Typography className={classes.noRequests} variant="h4">
-                  Nie ma aktualnie żadnych próśb o uzyskanie dostępu.
-              </Typography>
-              : null
+        { loading  ? 
+          <div className={classes.circularProgress}>
+            <CircularProgress size={40}/> 
+          </div>
+        : null }
+        {!loading && requests.length === 0 ? 
+          <Typography className={classes.noRequests} variant="h4">
+              Nie ma aktualnie żadnych próśb o uzyskanie dostępu.
+          </Typography>
+          : null
         } 
       </TableContainer>
     </div>
