@@ -56,14 +56,15 @@ class External extends Component {
     this.setState({ loadingData: true })
 
     axios.get('/documents/external')
-    .then(response => {
-      this.setState({loadingData: false, documentsData: response.data})
-    }).then(console.log('Data refreshed'))
+      .then(response => {
+        this.setState({loadingData: false, documentsData: response.data})})
+      .then(console.log('Data refreshed'))
+      .catch(error => {
+        console.log('error', error)
+      })
   }
 
-  componentDidMount () {
-    this.refreshData();
-  }
+  componentDidMount () { this.refreshData(); }
 
   handleAddItem = () => {this.setState({dialogOpen: true})}
 
@@ -92,7 +93,6 @@ class External extends Component {
   }
 
   handleSubmit = (event) => {
-
     this.uploadFiles()
     
     const { documentType, title, contains, author, file } = this.state
@@ -117,7 +117,7 @@ class External extends Component {
         })
           .then(response => {
             console.log(response)
-            setTimeout(() => this.setState({
+            this.setState({
               dialogOpen: false,
               loading: false,
               title: '',
@@ -125,21 +125,22 @@ class External extends Component {
               documentType: '',
               contains: [],
               file: ''
-            }), 2000)
+            })
             if (response.status < 200 || response.status > 299) {
-              setTimeout(() => this.setState({
+              this.setState({
                 alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
                 severity: 'error', 
                 snackBarAlertSuccess: true
-              }), 2000)
+              })
             }
             else {
-              setTimeout(() => this.setState({
+              this.setState({
                 alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
                 severity: 'success', 
                 snackBarAlertSuccess: true
-              }), 2000)         
+              })         
             }
+            this.refreshData();
           })
           .catch((err) => {
             if(err.message === 'Network Error') {
@@ -157,7 +158,6 @@ class External extends Component {
               })   
             } 
           })
-        setTimeout(() => this.refreshData(), 1000)
       }
   }
 
@@ -165,8 +165,8 @@ class External extends Component {
     let recordsId = [...this.state.selectedRecords] 
     this.setState({loading: true})
 
-    recordsId.map(async record => {
-      await axios.get(`/documents/external/${record}`)
+    recordsId.map(record => {
+      axios.get(`/documents/external/${record}`)
       axios.delete(`/documents/external/${record}`)
         .then(response => {
           console.log(response)
@@ -178,28 +178,24 @@ class External extends Component {
               severity: 'error',
               snackBarAlertSuccess: true
             })   
-          }    
+          } 
+          else {
+            this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
+              severity: 'success',
+              snackBarAlertSuccess: true
+            })
+        
+            this.refreshData();
+          }   
         })
+      return null
     })
-
-    setTimeout(() => this.setState({
-      deleteDialogOpen: false,
-      loading: false,
-      alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
-      severity: 'success',
-      snackBarAlertSuccess: true
-    }), 2000)
-
-    setTimeout(() => this.refreshData(), 1000)
   }
 
-  handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/external/download/${file}`, '_blank');
-    // axios.get('/documents/external/download')
-    //   .then(response => {
-    //     console.log(response, 'Weszlo')
-      // })
-  }
+  handleFileDownload = (file) => { window.open(`http://localhost:8080/documents/external/download/${file}`, '_blank'); }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
@@ -232,9 +228,8 @@ class External extends Component {
     data.append('file', this.state.file);
 
     axios.put('/documents/external/upload/', data)
-    .then(response => console.log(response))
-    //.then(clearTimeout(timeout))
-    .catch(err => console.log(err))
+      .then(response => console.log(response))
+      .catch(err => console.log(err))
   };
 
   handleCategoryChange = (event) => { this.setState({category: event.target.value}) }

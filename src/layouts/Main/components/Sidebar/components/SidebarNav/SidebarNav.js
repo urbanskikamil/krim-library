@@ -8,6 +8,64 @@ import { makeStyles } from '@material-ui/styles';
 import { List, ListItem, Button, colors } from '@material-ui/core';
 import axios from 'axios-orders'
 
+const CustomRouterLink = forwardRef((props, ref) => (
+  <div
+    ref={ref}
+    style={{ flexGrow: 1 }}
+  >
+    <RouterLink {...props} />
+  </div>
+));
+
+const SidebarNav = props => {
+  const { pages, className, ...rest } = props;
+
+  const classes = useStyles();
+  const session = JSON.parse(sessionStorage.getItem('session'))
+  const [user, setUser] = useState({})
+
+  const handleLogout = () => {
+    axios.get('/login/logout')
+    sessionStorage.removeItem('session')
+  }
+
+  useEffect(() => {
+    if (session) {
+      axios.get(`/login/getData/${session.userEmail}`)
+        .then(response => {
+          setUser(response.data)
+        })
+    }
+  }, [session])
+
+  return (
+    <List
+      {...rest}
+      className={clsx(classes.root, className)}
+    >
+      {pages.map(page => (
+        <ListItem
+          className={classes.item}
+          disableGutters
+          key={page.title}
+        >
+          <Button
+            activeClassName={classes.active}
+            className={classes.button}
+            component={CustomRouterLink}
+            disabled={page.title === 'Panel administratora' && user.accessLevel < 3 ? true : false}
+            to={page.href}
+            onClick={page.title === 'Wyloguj' ? handleLogout : null}
+          >
+            <div className={classes.icon}>{page.icon}</div>
+            {page.title}
+          </Button>
+        </ListItem>
+      ))}
+    </List>
+  );
+};
+
 const useStyles = makeStyles(theme => ({
   root: {},
   item: {
@@ -40,59 +98,6 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-
-const CustomRouterLink = forwardRef((props, ref) => (
-  <div
-    ref={ref}
-    style={{ flexGrow: 1 }}
-  >
-    <RouterLink {...props} />
-  </div>
-));
-
-const SidebarNav = props => {
-  const { pages, className, ...rest } = props;
-
-  const classes = useStyles();
-  const session = JSON.parse(sessionStorage.getItem('session'))
-  const [user, setUser] = useState({})
-
-  useEffect(() => {
-    if (session) {
-      axios.get(`/login/getData/${session.userEmail}`)
-        .then(response => {
-          console.log('user', response.data)
-          setUser(response.data)
-        })
-    }
-  }, [])
-
-  return (
-    <List
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      {pages.map(page => (
-        <ListItem
-          className={classes.item}
-          disableGutters
-          key={page.title}
-        >
-          <Button
-            activeClassName={classes.active}
-            className={classes.button}
-            component={CustomRouterLink}
-            disabled={page.title === 'Panel administratora' && user.accessLevel < 3 ? true : false}
-            to={page.href}
-          >
-            <div className={classes.icon}>{page.icon}</div>
-            {page.title}
-          </Button>
-        </ListItem>
-      ))}
-    </List>
-  );
-};
 
 SidebarNav.propTypes = {
   className: PropTypes.string,

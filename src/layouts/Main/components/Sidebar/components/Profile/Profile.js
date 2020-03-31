@@ -5,26 +5,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Typography } from '@material-ui/core';
 import axios from 'axios-orders'
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    minHeight: 'fit-content'
-  },
-  avatar: {
-    width: 60,
-    height: 60
-  },
-  name: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
-  },
-  typo: {
-    marginTop: theme.spacing(1)
-  }
-}));
-
 const accesses = [
   {level: 0, description: 'Użytkownik nieautoryzowany'},
   {level: 1, description: 'Użytkownik autoryzowany'},
@@ -42,20 +22,16 @@ const Profile = props => {
 
   const classes = useStyles();
   const session = JSON.parse(sessionStorage.getItem('session'))
-  console.log('session', session)
-
   const [user, setUser] = useState({})
 
-  
   useEffect(() => {
     if (session) {
       axios.get(`/login/getData/${session.userEmail}`)
         .then(response => {
-          console.log('user', response.data)
           setUser(response.data)
         })
     }
-  }, [])
+  }, [session])
   
 
   const userData = {
@@ -88,6 +64,26 @@ const Profile = props => {
     </div>
   );
 };
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minHeight: 'fit-content'
+  },
+  avatar: {
+    width: 60,
+    height: 60
+  },
+  name: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  },
+  typo: {
+    marginTop: theme.spacing(1)
+  }
+}));
 
 Profile.propTypes = {
   className: PropTypes.string

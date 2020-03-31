@@ -19,43 +19,6 @@ import {
 import Icon from '@material-ui/core/Icon';
 import axios from 'axios-orders'
 
-
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
-  },
-  container: {
-    padding: '2%'
-  },
-  paper: {
-    padding: '2%'
-  },
-  sentRequest: {
-    padding: '2%',
-    marginTop: '2%'
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    marginLeft: 0,
-    minWidth: 120,
-  },
-  accessCell: {
-    minWidth: '150px'
-  },
-  noRequests: {
-    width: '100%',
-    textAlign: 'center',
-    padding: '5%',
-  },
-  circularProgress: {
-    width: '100%',
-    height: '98px',
-    display: 'flex', 
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-}));
-
 const rows = [
   { type: 'Użytkownik autoryzowany', description: 'Użytkownik autoryzowany ma prawo do pobierania dokumentów', accessLevel: 1 },
   { type: 'Edytor', description: 'Edytor ma prawo do pobierania dokumentów, dodawania nowych oraz usuwania tych dodanych przez siebie', accessLevel: 2 },
@@ -97,14 +60,12 @@ const Access = (props) => {
     if (session) {
       axios.get(`/requestAccess/check/${session.userEmail}`)
       .then(response => {
-        console.log('czy cos jest',response.data)
         setRequestType(response.data.requestType)
         setRequestPending(response.data.requestPending)
       })
 
       axios.get(`/login/getData/${session.userEmail}`)
       .then(response => {
-        console.log('user', response.data)
         setUser(response.data)
         setLoading(false)
       })
@@ -201,5 +162,41 @@ const Access = (props) => {
     </div>
   );
 }
+
+const useStyles = makeStyles(theme => ({
+  table: {
+    minWidth: 650,
+  },
+  container: {
+    padding: '2%'
+  },
+  paper: {
+    padding: '2%'
+  },
+  sentRequest: {
+    padding: '2%',
+    marginTop: '2%'
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    marginLeft: 0,
+    minWidth: 120,
+  },
+  accessCell: {
+    minWidth: '150px'
+  },
+  noRequests: {
+    width: '100%',
+    textAlign: 'center',
+    padding: '5%',
+  },
+  circularProgress: {
+    width: '100%',
+    height: '98px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+}));
 
 export default withRouter(Access)

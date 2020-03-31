@@ -11,6 +11,9 @@ import { Alert, DeleteDialog, DialogWindow } from '../../UI'
 import theme from '../../theme/index'
 import axios from '../../axios-orders'
 
+//let source;
+//const CancelToken = axiosToken.CancelToken;
+
 const categories = [
   {label: 'Typ', key: 'type'},
   {label: 'Nazwa', key: 'title'},
@@ -62,8 +65,11 @@ class ThesisDocuments extends Component {
 
     axios.get('/documents/thesis')
       .then(response => {
-        this.setState({loadingData: false, documentsData: response.data})
-      }).then(console.log('Data refreshed'))
+        this.setState({loadingData: false, documentsData: response.data})})
+      .then(console.log('Data refreshed'))
+      .catch(error => {
+          console.log('error', error)
+      })
   }
 
   componentDidMount () {
@@ -100,7 +106,6 @@ class ThesisDocuments extends Component {
   }
 
   handleSubmit = (event) => {
-
     this.uploadFiles()
     
     const { documentType, title, contains, author, supervisor, file } = this.state
@@ -126,7 +131,7 @@ class ThesisDocuments extends Component {
       })
         .then(response => {
           console.log(response)
-          setTimeout(() => this.setState({
+          this.setState({
             dialogOpen: false,
             loading: false,
             title: '',
@@ -135,21 +140,22 @@ class ThesisDocuments extends Component {
             documentType: '',
             contains: [],
             file: ''
-          }), 2000)
+          })
           if (response.status < 200 || response.status > 299) {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
               severity: 'error', 
               snackBarAlertSuccess: true
-            }), 2000)
+            })
           }
           else {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
               severity: 'success', 
               snackBarAlertSuccess: true
-            }), 2000)         
+            })       
           }
+          this.refreshData();
         })
         .catch((err) => {
           if(err.message === 'Network Error') {
@@ -168,7 +174,6 @@ class ThesisDocuments extends Component {
             })   
           } 
         })
-      setTimeout(() => this.refreshData(), 1000)
     }
   }
 
@@ -176,8 +181,8 @@ class ThesisDocuments extends Component {
     let recordsId = [...this.state.selectedRecords] 
     this.setState({loading: true})
 
-    recordsId.map(async record => {
-      await axios.get(`/documents/thesis/${record}`)
+    recordsId.map(record => {
+      axios.get(`/documents/thesis/${record}`)
       axios.delete(`/documents/thesis/${record}`)
         .then(response => {
           console.log(response)
@@ -189,28 +194,23 @@ class ThesisDocuments extends Component {
               severity: 'error',
               snackBarAlertSuccess: true
             })   
-          }    
+          }
+          else {
+            this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
+              severity: 'success',
+              snackBarAlertSuccess: true
+            })
+          }
+          this.refreshData();   
         })
+      return null
     })
-
-    setTimeout(() => this.setState({
-      deleteDialogOpen: false,
-      loading: false,
-      alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
-      severity: 'success',
-      snackBarAlertSuccess: true
-    }), 2000)
-
-    setTimeout(() => this.refreshData(), 1000)
   }
 
-  handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank');
-    // axios.get('/documents/thesis/download')
-    //   .then(response => {
-    //     console.log(response, 'Weszlo')
-    // })
-  }
+  handleFileDownload = (file) => { window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank'); }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
@@ -243,8 +243,7 @@ class ThesisDocuments extends Component {
     data.append('file', this.state.file);
 
     axios.put('/documents/thesis/upload/', data)
-      .then(response => console.log(response))
-    //.then(clearTimeout(timeout))
+      .then(response => console.log('uploaded',response.data))
       .catch(err => console.log(err))
   };
 

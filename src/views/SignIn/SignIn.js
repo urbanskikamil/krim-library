@@ -23,7 +23,7 @@ const schema = {
     email: true,
     length: {
       maximum: 64
-    }
+    },
   },
   password: {
     presence: { allowEmpty: false, message: '- pole wymagane' },

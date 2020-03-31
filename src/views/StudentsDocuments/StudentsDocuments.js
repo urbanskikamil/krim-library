@@ -62,8 +62,11 @@ class StudentsDocuments extends Component {
 
     axios.get('/documents/students')
       .then(response => {
-        this.setState({loadingData: false, documentsData: response.data})
-      }).then(console.log('Data refreshed'))
+        this.setState({loadingData: false, documentsData: response.data})})
+      .then(console.log('Data refreshed'))
+      .catch(error => {
+        console.log('error', error)
+      })
   }
 
   componentDidMount () {
@@ -100,7 +103,6 @@ class StudentsDocuments extends Component {
   }
 
   handleSubmit = (event) => {
-
     this.uploadFiles()
     
     const { documentType, title, contains, author, studiesClass, file } = this.state
@@ -126,7 +128,7 @@ class StudentsDocuments extends Component {
       })
         .then(response => {
           console.log(response)
-          setTimeout(() => this.setState({
+          this.setState({
             dialogOpen: false,
             loading: false,
             title: '',
@@ -135,21 +137,22 @@ class StudentsDocuments extends Component {
             documentType: '',
             contains: [],
             file: ''
-          }), 2000)
+          })
           if (response.status < 200 || response.status > 299) {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
               severity: 'error', 
               snackBarAlertSuccess: true
-            }), 2000)
+            })
           }
           else {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
               severity: 'success', 
               snackBarAlertSuccess: true
-            }), 2000)         
+            })        
           }
+          this.refreshData();
         })
         .catch((err) => {
           if(err.message === 'Network Error') {
@@ -168,7 +171,6 @@ class StudentsDocuments extends Component {
             })   
           } 
         })
-      setTimeout(() => this.refreshData(), 1000)
     }
   }
 
@@ -176,8 +178,8 @@ class StudentsDocuments extends Component {
     let recordsId = [...this.state.selectedRecords] 
     this.setState({loading: true})
 
-    recordsId.map(async record => {
-      await axios.get(`/documents/students/${record}`)
+    recordsId.map(record => {
+      axios.get(`/documents/students/${record}`)
       axios.delete(`/documents/students/${record}`)
         .then(response => {
           console.log(response)
@@ -190,42 +192,36 @@ class StudentsDocuments extends Component {
               snackBarAlertSuccess: true
             })   
           }    
+          else {
+            this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
+              severity: 'success',
+              snackBarAlertSuccess: true
+            });
+            this.refreshData();
+          }
         })
+      return null
     })
-
-    setTimeout(() => this.setState({
-      deleteDialogOpen: false,
-      loading: false,
-      alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
-      severity: 'success',
-      snackBarAlertSuccess: true
-    }), 2000)
-
-    setTimeout(() => this.refreshData(), 1000)
   }
 
-  handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/students/download/${file}`, '_blank');
-    // axios.get('/documents/students/download')
-    //   .then(response => {
-    //     console.log(response, 'Weszlo')
-    // })
-  }
+  handleFileDownload = (file) => { window.open(`http://localhost:8080/documents/students/download/${file}`, '_blank'); }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
   handleDeleteDialogOpen = () => {
-    console.log(this.state.selectedRecords)
     if(this.state.selectedRecords.length === 0) 
       this.setState({
         alertContent: 'Proszę wybrać dokument do usunięcia',
         severity: 'warning', 
         snackBarAlertSuccess: true        
       })
-    else this.setState({deleteDialogOpen: true})
+    else this.setState({ deleteDialogOpen: true })
   }
 
-  handleDeleteDialogClose = () => { this.setState({deleteDialogOpen: false}) }
+  handleDeleteDialogClose = () => { this.setState({ deleteDialogOpen: false }) }
 
   handleAlertClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -243,8 +239,7 @@ class StudentsDocuments extends Component {
     data.append('file', this.state.file);
 
     axios.put('/documents/students/upload/', data)
-      .then(response => console.log(response))
-    //.then(clearTimeout(timeout))
+      .then(response => console.log(response.data))
       .catch(err => console.log(err))
   };
 

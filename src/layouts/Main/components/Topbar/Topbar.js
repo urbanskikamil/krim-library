@@ -3,23 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import { AppBar, Toolbar, Hidden, IconButton } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import InputIcon from '@material-ui/icons/Input';
+import { AppBar, Toolbar, Hidden, IconButton, Tooltip } from '@material-ui/core';
+import { Menu, Input } from '@material-ui/icons';
 import axios from 'axios-orders'
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    boxShadow: 'none'
-  },
-  flexGrow: {
-    flexGrow: 1
-  },
-  signOutButton: {
-    marginLeft: theme.spacing(1),
-    color: 'white',
-  },
-}));
 
 const Topbar = props => {
   const { className, onSidebarOpen, disableLogout, disableLink, ...rest } = props;
@@ -27,7 +13,6 @@ const Topbar = props => {
   const classes = useStyles();
 
   const handleLogout = () => {
-    const session = JSON.parse(sessionStorage.getItem('session'))
     axios.get('/login/logout')
     sessionStorage.removeItem('session')
   }
@@ -58,21 +43,23 @@ const Topbar = props => {
         { props.disableLogout ? null :
           <React.Fragment>
             <Hidden mdDown>
-              <RouterLink to="/sign-in" onClick={handleLogout}>
-                <IconButton
-                  className={classes.signOutButton}
-                  color="inherit"
-                >
-                  <InputIcon />
-                </IconButton>
-              </RouterLink>
+              <Tooltip title="Wyloguj">
+                <RouterLink to="/sign-in" onClick={handleLogout}>
+                  <IconButton
+                    className={classes.signOutButton}
+                    color="inherit"
+                  >
+                    <Input />
+                  </IconButton>
+                </RouterLink>
+              </Tooltip>
             </Hidden>
             <Hidden lgUp>
               <IconButton
                 color="inherit"
                 onClick={onSidebarOpen}
               >
-                <MenuIcon />
+                <Menu />
               </IconButton>
             </Hidden>
           </React.Fragment>
@@ -81,6 +68,19 @@ const Topbar = props => {
     </AppBar>
   );
 };
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    boxShadow: 'none'
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  signOutButton: {
+    marginLeft: theme.spacing(1),
+    color: 'white',
+  },
+}));
 
 Topbar.propTypes = {
   className: PropTypes.string,

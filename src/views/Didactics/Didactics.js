@@ -61,17 +61,18 @@ class Didactics extends Component {
 
     axios.get('/documents/didactics')
       .then(response => {
-        this.setState({loadingData: false, documentsData: response.data})
-      }).then(console.log('Data refreshed'))
+        this.setState({loadingData: false, documentsData: response.data})})
+      .then(console.log('Data refreshed'))
+      .catch(error => {
+        console.log('error', error)
+      })
   }
 
-  componentDidMount () {
-    this.refreshData();
-  }
+  componentDidMount () { this.refreshData(); }
 
-  handleAddItem = () => {this.setState({dialogOpen: true})}
+  handleAddItem = () => { this.setState({dialogOpen: true})}
 
-  handleDialogOpen = () => {this.setState({dialogOpen: true})}
+  handleDialogOpen = () => { this.setState({dialogOpen: true}) }
 
   handleDialogClose = () => {
     this.setState({
@@ -99,7 +100,6 @@ class Didactics extends Component {
   }
 
   handleSubmit = (event) => {
-
     this.uploadFiles()
     
     const { documentType, title, contains, author, studiesClass, file } = this.state
@@ -125,7 +125,7 @@ class Didactics extends Component {
       })
         .then(response => {
           console.log(response)
-          setTimeout(() => this.setState({
+          this.setState({
             dialogOpen: false,
             loading: false,
             title: '',
@@ -134,21 +134,22 @@ class Didactics extends Component {
             documentType: '',
             contains: [],
             file: ''
-          }), 2000)
+          })
           if (response.status < 200 || response.status > 299) {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Wystąpił błąd podczas próby dodania dokumentu. Proszę spróbować jeszcze raz',
               severity: 'error', 
               snackBarAlertSuccess: true
-            }), 2000)
+            })
           }
           else {
-            setTimeout(() => this.setState({
+            this.setState({
               alertContent: 'Dokument został poprawnie dodany bo bazy danych!',
               severity: 'success', 
               snackBarAlertSuccess: true
-            }), 2000)         
+            })        
           }
+          this.refreshData();
         })
         .catch((err) => {
           if(err.message === 'Network Error') {
@@ -167,7 +168,6 @@ class Didactics extends Component {
             })   
           } 
         })
-      setTimeout(() => this.refreshData(), 1000)
     }
   }
 
@@ -175,8 +175,8 @@ class Didactics extends Component {
     let recordsId = [...this.state.selectedRecords] 
     this.setState({loading: true})
 
-    recordsId.map(async record => {
-      await axios.get(`/documents/didactics/${record}`)
+    recordsId.map(record => {
+      axios.get(`/documents/didactics/${record}`)
       axios.delete(`/documents/didactics/${record}`)
         .then(response => {
           console.log(response)
@@ -188,28 +188,23 @@ class Didactics extends Component {
               severity: 'error',
               snackBarAlertSuccess: true
             })   
-          }    
+          }  
+          else {
+            this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
+              severity: 'success',
+              snackBarAlertSuccess: true
+            })       
+          this.refreshData()
+          }  
         })
+      return null
     })
-
-    setTimeout(() => this.setState({
-      deleteDialogOpen: false,
-      loading: false,
-      alertContent: 'Dokument został poprawnie usunięty z bazy danych!',
-      severity: 'success',
-      snackBarAlertSuccess: true
-    }), 2000)
-
-    setTimeout(() => this.refreshData(), 1000)
   }
 
-  handleFileDownload = (file) => { 
-    window.open(`http://localhost:8080/documents/didactics/download/${file}`, '_blank');
-    // axios.get('/documents/Didactics/download')
-    //   .then(response => {
-    //     console.log(response, 'Weszlo')
-    // })
-  }
+  handleFileDownload = (file) => { window.open(`http://localhost:8080/documents/didactics/download/${file}`, '_blank'); }
 
   handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
 
@@ -243,7 +238,6 @@ class Didactics extends Component {
 
     axios.put('/documents/didactics/upload/', data)
       .then(response => console.log(response))
-    //.then(clearTimeout(timeout))
       .catch(err => console.log(err))
   };
 
