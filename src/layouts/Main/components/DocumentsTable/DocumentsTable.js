@@ -69,7 +69,7 @@ const DocumentsTable = props => {
     setSelectedUsers(selectedUsers);
   };
 
-  const handleSelectOne = (event, id) => {
+  const handleSelectOne = (event, id, author) => {
     const selectedIndex = selectedUsers.indexOf(id);
     let newSelectedUsers = [];
 
@@ -87,7 +87,7 @@ const DocumentsTable = props => {
     }
     setSelectedUsers(newSelectedUsers);
     console.log(newSelectedUsers)
-    findSelected(newSelectedUsers)
+    findSelected(newSelectedUsers, author)
   };
 
   // const handlePageChange = (event, page) => {
@@ -137,7 +137,7 @@ const DocumentsTable = props => {
                       <Checkbox
                         checked={selectedUsers.indexOf(doc.id) !== -1}
                         color="primary"
-                        onChange={event => handleSelectOne(event, doc.id)}
+                        onChange={event => handleSelectOne(event, doc.id, doc.author)}
                         value="true"
                       />
                     </TableCell>

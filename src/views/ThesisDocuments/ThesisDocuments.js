@@ -28,6 +28,8 @@ const types = [
   {value: 'Praca doktorska'},
 ]
 
+const session = JSON.parse(sessionStorage.getItem('session'))
+
 class ThesisDocuments extends Component {
   state = {
     documentsData: [],
@@ -52,6 +54,7 @@ class ThesisDocuments extends Component {
     filterRequests: [],
     showNothing: false,
     loadingData: false,
+    user: null,
   }
 
   fields = [
@@ -74,9 +77,22 @@ class ThesisDocuments extends Component {
 
   componentDidMount () {
     this.refreshData();
+    axios.get(`/login/getData/${session.userEmail}`)
+      .then(response => {
+        this.setState({ user: response.data })
+      })
   }
 
-  handleAddItem = () => {this.setState({dialogOpen: true})}
+  handleAddItem = () => {
+    if (this.state.user.accessLevel === 3 || this.state.user.accessLevel === 2) {
+      return this.setState({dialogOpen: true})
+    }
+    return this.setState({
+      alertContent: 'Nie masz uprawnień do dodawania plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+      severity: 'error', 
+      snackBarAlertSuccess: true,
+    })    
+  }
 
   handleDialogOpen = () => {this.setState({dialogOpen: true})}
 
@@ -177,9 +193,8 @@ class ThesisDocuments extends Component {
     }
   }
 
-  handleDeleteRecord = () => {
+  deleteRecord = () => {
     let recordsId = [...this.state.selectedRecords] 
-    this.setState({loading: true})
 
     recordsId.map(record => {
       axios.get(`/documents/thesis/${record}`)
@@ -210,9 +225,52 @@ class ThesisDocuments extends Component {
     })
   }
 
-  handleFileDownload = (file) => { window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank'); }
+  handleDeleteRecord = () => {
+    this.setState({loading: true})
 
-  handleFindRecordId = (records) => { this.setState({selectedRecords: records}) }
+    if (this.state.user.accessLevel === 3) {
+      return this.deleteRecord();
+    }
+    else if (this.state.user.accessLevel === 2) {
+      const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
+      if (fullName === this.state.selectedDocAuthor) {
+        return this.deleteRecord();
+      }
+      return this.setState({
+        deleteDialogOpen: false,
+        loading: false,
+        alertContent: 'Nie masz uprawnień do usunięcia tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+        severity: 'error', 
+        snackBarAlertSuccess: true,
+      })     
+    }
+    else {
+      return this.setState({
+        deleteDialogOpen: false,
+        loading: false,
+        alertContent: 'Nie masz uprawnień do usunięcia tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+        severity: 'error', 
+        snackBarAlertSuccess: true,
+      })  
+    }
+  }
+
+  handleFileDownload = (file) => { 
+    if (session) {
+      if (this.state.user.accessLevel === 0) {
+        return this.setState({
+          alertContent: 'Nie masz uprawnień do pobrania tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+          severity: 'error', 
+          snackBarAlertSuccess: true
+        })
+      }
+      else return window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank'); 
+    }
+  }
+
+  handleFindRecordId = (records, author) => { 
+    this.setState({selectedRecords: records, selectedDocAuthor: author}) 
+  }
 
   handleDeleteDialogOpen = () => {
     console.log(this.state.selectedRecords)
@@ -347,7 +405,7 @@ class ThesisDocuments extends Component {
           <DocumentsTable 
             documentsData={this.state.showNothing === false ? this.state.filteredData.length < 1 ? this.state.documentsData 
               : this.state.filteredData : []}
-            findSelected={(records) => this.handleFindRecordId(records)}
+            findSelected={this.handleFindRecordId}
             fileDownload={this.handleFileDownload} 
             categories={categories}
             loadingData={this.state.loadingData}

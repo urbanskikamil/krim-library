@@ -29,7 +29,7 @@ const DeleteDialog = (props) => {
           <DialogContent>
             <DialogContentText>
               Czy napewno chcesz usunąć zaznaczone pliki?<br/>
-              Operacji tej nie będzie mozna cofnąć
+              Operacji tej nie będzie można cofnąć
             </DialogContentText>
             <div className={classes.flexContainer}>
               <Button 

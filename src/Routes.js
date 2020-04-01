@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { Component } from 'react';
 import { Switch, Redirect } from 'react-router-dom';
 import {withRouter} from 'react-router-dom';
 

@@ -26,7 +26,7 @@ const DialogWindow = (props) => {
           <DialogTitle id="form-dialog-title">Dodaj plik</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Aby dodać plik proszę wypełnić ponizszy formularz 
+              Aby dodać plik proszę wypełnić poniższy formularz 
               i kliknąć przycisk "Dodaj"
             </DialogContentText>
             <InputField 

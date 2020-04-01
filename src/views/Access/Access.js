@@ -88,8 +88,9 @@ const Access = (props) => {
               <TableCell align="left">Poproś o dostęp</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-          {rows.map((row, index) => (
+         <TableBody>
+          {loading ? null
+            : rows.map((row, index) => (
               <TableRow key={index}>
                 <TableCell align="left" component="th" scope="row">
                   {row.type}
@@ -112,6 +113,11 @@ const Access = (props) => {
             ))}
           </TableBody>
         </Table>
+        { loading  ? 
+          <div className={classes.circularProgress}>
+            <CircularProgress size={40}/> 
+          </div>
+        : null }
       </TableContainer>
       <Paper className={classes.sentRequest}>
         <Typography className={classes.title} variant="h3">
