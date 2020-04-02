@@ -16,37 +16,6 @@ import {
 import { Delete } from '@material-ui/icons';
 import axios from 'axios-orders'
 
-
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
-  },
-  container: {
-    padding: '2%'
-  },
-  paper: {
-    padding: '2%'
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    marginLeft: 0,
-    minWidth: 120,
-  },
-  noRequests: {
-    width: '100%',
-    textAlign: 'center',
-    padding: '5%',
-  },
-  circularProgress: {
-    width: '100%',
-    height: '138px',
-    display: 'flex', 
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-}));
-
-
 const Admin = () => {
   const classes = useStyles();
   const [requests, setRequests] = useState([])
@@ -152,5 +121,34 @@ const Admin = () => {
     </div>
   );
 }
+
+const useStyles = makeStyles(theme => ({
+  table: {
+    minWidth: 650,
+  },
+  container: {
+    padding: '2%'
+  },
+  paper: {
+    padding: '2%'
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    marginLeft: 0,
+    minWidth: 120,
+  },
+  noRequests: {
+    width: '100%',
+    textAlign: 'center',
+    padding: '5%',
+  },
+  circularProgress: {
+    width: '100%',
+    height: '138px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+}));
 
 export default Admin

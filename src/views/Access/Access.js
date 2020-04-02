@@ -26,7 +26,6 @@ const rows = [
 ];
 
 const Access = (props) => {
-  //const { history } = props;
 
   const classes = useStyles();
   const session = JSON.parse(sessionStorage.getItem('session'))

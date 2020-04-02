@@ -42,7 +42,6 @@ const useStyles = makeStyles(theme => ({
   filter: {
     display: 'flex',
     alignContent: 'center',
-    //margin: theme.spacing(2)
     margin: '20px'
   },
   span: {

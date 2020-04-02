@@ -46,6 +46,7 @@ class Publications extends Component {
     showNothing: false,
     loadingData: false,
     user: null,
+    selectedDocAuthor: '',
   }
   
   fields = [
@@ -181,8 +182,8 @@ class Publications extends Component {
     let recordsId = [...this.state.selectedRecords] 
 
     recordsId.map(record => {
-      axios.get(`/documents/thesis/${record}`)
-      axios.delete(`/documents/thesis/${record}`)
+      axios.get(`/documents/publications/${record}`)
+      axios.delete(`/documents/publications/${record}`)
         .then(response => {
           console.log(response)
           if (response.status < 200 || response.status > 299) {
@@ -217,16 +218,18 @@ class Publications extends Component {
     }
     else if (this.state.user.accessLevel === 2) {
       const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
-      if (fullName === this.state.selectedDocAuthor) {
-        return this.deleteRecord();
+      for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
+        if (this.state.selectedDocAuthor[i] !== fullName) {
+          return this.setState({
+            deleteDialogOpen: false,
+            loading: false,
+            alertContent: 'Nie masz uprawnień do usunięcia przynajmniej jednego z tych plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+            severity: 'error', 
+            snackBarAlertSuccess: true,
+          })  
+        }
       }
-      return this.setState({
-        deleteDialogOpen: false,
-        loading: false,
-        alertContent: 'Nie masz uprawnień do usunięcia tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
-        severity: 'error', 
-        snackBarAlertSuccess: true,
-      })     
+      return this.deleteRecord();
     }
     else {
       return this.setState({
@@ -248,16 +251,26 @@ class Publications extends Component {
           snackBarAlertSuccess: true
         })
       }
-      else return window.open(`http://localhost:8080/documents/thesis/download/${file}`, '_blank'); 
+      else return window.open(`http://localhost:8080/documents/publications/download/${file}`, '_blank'); 
     }
   }
 
   handleFindRecordId = (records, author) => { 
-    this.setState({selectedRecords: records, selectedDocAuthor: author}) 
+    if (this.state.selectedRecords.length > records.length) {
+      const difference = this.state.selectedRecords.filter(x => !records.includes(x));
+      const deletedIndex = this.state.selectedRecords.indexOf(difference[0])
+      let copiedAuthorArray = [...this.state.selectedDocAuthor]
+      copiedAuthorArray.splice(deletedIndex, 1)
+      this.setState({ selectedRecords: records, selectedDocAuthor: copiedAuthorArray })
+    }
+    else {
+      this.setState(prevState => ({
+        selectedRecords: records, selectedDocAuthor: [...prevState.selectedDocAuthor, author]
+      })) 
+    }
   }
 
   handleDeleteDialogOpen = () => {
-    console.log(this.state.selectedRecords)
     if(this.state.selectedRecords.length === 0) 
       this.setState({
         alertContent: 'Proszę wybrać dokument do usunięcia',

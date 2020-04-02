@@ -6,7 +6,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
-  //CardActions,
   CardContent,
   Checkbox,
   Table,
@@ -15,54 +14,24 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
-  //TablePagination
 } from '@material-ui/core';
 
 import GetAppIcon from '@material-ui/icons/GetApp';
-
-const useStyles = makeStyles(theme => ({
-  root: {},
-  content: {
-    padding: 0
-  },
-  inner: {
-    minWidth: 1050
-  },
-  nameContainer: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  avatar: {
-    marginRight: theme.spacing(2)
-  },
-  actions: {
-    justifyContent: 'flex-end'
-  },
-  circularProgress: {
-    width: '100%',
-    height: '138px',
-    display: 'flex', 
-    justifyContent: 'center',
-    alignItems: 'center',
-}
-}));
 
 const DocumentsTable = props => {
   const { className, documentsData, fileDownload, findSelected, categories, loadingData, ...rest } = props;
 
   const classes = useStyles();
-
   const [selectedUsers, setSelectedUsers] = useState([]);
-  //const [page, setPage] = useState(0);
 
   const handleSelectAll = event => {
     const { documentsData } = props;
-
     let selectedUsers;
 
     if (event.target.checked) {
       selectedUsers = documentsData.map(doc => doc.id);
-    } else {
+    } 
+    else {
       selectedUsers = [];
     }
 
@@ -89,14 +58,6 @@ const DocumentsTable = props => {
     console.log(newSelectedUsers)
     findSelected(newSelectedUsers, author)
   };
-
-  // const handlePageChange = (event, page) => {
-  //   setPage(page);
-  // };
-
-  // const handleRowsPerPageChange = event => {
-  //   setRowsPerPage(event.target.value);
-  // };
 
   return (
     <Card
@@ -160,20 +121,36 @@ const DocumentsTable = props => {
           </div>
         </PerfectScrollbar>
       </CardContent>
-      {/* <CardActions className={classes.actions}>
-        <TablePagination
-          component="div"
-          count={documentsData.length}
-          onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleRowsPerPageChange}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
-      </CardActions> */}
     </Card>
   );
 };
+
+const useStyles = makeStyles(theme => ({
+  root: {},
+  content: {
+    padding: 0
+  },
+  inner: {
+    minWidth: 1050
+  },
+  nameContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  avatar: {
+    marginRight: theme.spacing(2)
+  },
+  actions: {
+    justifyContent: 'flex-end'
+  },
+  circularProgress: {
+    width: '100%',
+    height: '138px',
+    display: 'flex', 
+    justifyContent: 'center',
+    alignItems: 'center',
+}
+}));
 
 DocumentsTable.propTypes = {
   className: PropTypes.string,

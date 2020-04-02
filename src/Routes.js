@@ -17,19 +17,6 @@ const DidacticsView = asyncComponent(() => import('./views/Didactics').then(modu
 const ExternalView = asyncComponent(() => import('./views/External').then(module => module.default));
 const AdminView = asyncComponent(() => import('./views/Admin').then(module => module.default));
 const AccessView = asyncComponent(() => import('./views/Access').then(module => module.default));
-// import {
-//   Account as AccountView,
-//   SignUp as SignUpView,
-//   SignIn as SignInView,
-//   NotFound as NotFoundView,
-//   ThesisDocuments as ThesisDocumentsView,
-//   Publications as PublicationsView,
-//   StudentsDocuments as StudentsDocumentsView,
-//   Didactics as DidacticsView,
-//   External as ExternalView,
-//   Admin as AdminView,
-//   Access as AccessView
-// } from './views';
 
 class Routes extends Component {
   state = {
@@ -129,19 +116,5 @@ class Routes extends Component {
     )
   }
 }
-//   const [authenticated, setAuthenticated] = useState(false)
-//   // let routes = null
-//   console.log('props',props)
-//   useEffect(() => {
-//     if (sessionStorage.getItem('session')) {
-//       const auth = JSON.parse(sessionStorage.getItem('session')).isAuthorized
-//       console.log(auth)
-//       setAuthenticated(auth)
-//     }
-//   }, [])
-
-//   return (
-//   );
-// };
 
 export default withRouter(Routes)

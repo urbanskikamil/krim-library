@@ -29,8 +29,6 @@ const Toolbar = props => {
           handleInput={handleInput}
         />
         <span className={classes.spacer} />
-        {/* <Button className={classes.importButton}>Import</Button>
-        <Button className={classes.exportButton}>Export</Button> */}
         <Button
           color="secondary"
           onClick={clicked}

@@ -14,7 +14,6 @@ const inputField = (props) => {
       required
       value={props[field.id]}
       variant="filled"
-      //type="text"
     />)
   )
 }
