@@ -4,19 +4,20 @@ import {withRouter} from 'react-router-dom';
 
 import { RouteWithLayout } from './components';
 import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
-import asyncComponent from './AsyncComponent'
 
-const AccountView = asyncComponent(() => import('./views/Account').then(module => module.default));
-const SignUpView = asyncComponent(() => import('./views/SignUp').then(module => module.default));
-const SignInView = asyncComponent(() => import('./views/SignIn').then(module => module.default));
-const NotFoundView = asyncComponent(() => import('./views/NotFound').then(module => module.default));
-const ThesisDocumentsView = asyncComponent(() => import('./views/ThesisDocuments').then(module => module.default));
-const PublicationsView = asyncComponent(() => import('./views/Publications').then(module => module.default));
-const StudentsDocumentsView = asyncComponent(() => import('./views/StudentsDocuments').then(module => module.default));
-const DidacticsView = asyncComponent(() => import('./views/Didactics').then(module => module.default));
-const ExternalView = asyncComponent(() => import('./views/External').then(module => module.default));
-const AdminView = asyncComponent(() => import('./views/Admin').then(module => module.default));
-const AccessView = asyncComponent(() => import('./views/Access').then(module => module.default));
+import {
+  Account as AccountView,
+  SignUp as SignUpView,
+  SignIn as SignInView,
+  NotFound as NotFoundView,
+  ThesisDocuments as ThesisDocumentsView,
+  Publications as PublicationsView,
+  StudentsDocuments as StudentsDocumentsView,
+  Didactics as DidacticsView,
+  External as ExternalView,
+  Admin as AdminView,
+  Access as AccessView
+} from './views';
 
 class Routes extends Component {
   state = {

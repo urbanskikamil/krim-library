@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 
@@ -54,8 +56,7 @@ const Access = (props) => {
     setSnackbarAlert(false)
   }
 
-  useEffect(() => {
-    setLoading(true)
+  const handleGetRequest = () => {
     if (session) {
       axios.get(`/requestAccess/check/${session.userEmail}`)
       .then(response => {
@@ -69,6 +70,11 @@ const Access = (props) => {
         setLoading(false)
       })
     }
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    handleGetRequest();
   }, [requestPending])
 
   return (

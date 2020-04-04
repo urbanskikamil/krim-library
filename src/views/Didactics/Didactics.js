@@ -65,7 +65,6 @@ class Didactics extends Component {
     axios.get('/documents/didactics')
       .then(response => {
         this.setState({loadingData: false, documentsData: response.data})})
-      .then(console.log('Data refreshed'))
       .catch(error => {
         console.log('error', error)
       })
@@ -80,14 +79,16 @@ class Didactics extends Component {
   }
 
   handleAddItem = () => {
-    if (this.state.user.accessLevel === 3 || this.state.user.accessLevel === 2) {
-      return this.setState({dialogOpen: true})
-    }
-    return this.setState({
-      alertContent: 'Nie masz uprawnień do dodawania plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
-      severity: 'error', 
-      snackBarAlertSuccess: true,
-    })    
+    if (this.state.user) {
+      if (this.state.user.accessLevel === 3 || this.state.user.accessLevel === 2) {
+        return this.setState({dialogOpen: true})
+      }
+      return this.setState({
+        alertContent: 'Nie masz uprawnień do dodawania plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+        severity: 'error', 
+        snackBarAlertSuccess: true,
+      })   
+    } 
   }
 
   handleDialogOpen = () => { this.setState({dialogOpen: true}) }
@@ -222,34 +223,35 @@ class Didactics extends Component {
   }
 
   handleDeleteRecord = () => {
+    if (this.state.user) {  
     this.setState({loading: true})
-
-    if (this.state.user.accessLevel === 3) {
-      return this.deleteRecord();
-    }
-    else if (this.state.user.accessLevel === 2) {
-      const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
-      for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
-        if (this.state.selectedDocAuthor[i] !== fullName) {
-          return this.setState({
-            deleteDialogOpen: false,
-            loading: false,
-            alertContent: 'Nie masz uprawnień do usunięcia przynajmniej jednego z tych plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
-            severity: 'error', 
-            snackBarAlertSuccess: true,
-          })  
-        }
-      }   
-      return this.deleteRecord();
-    }
-    else {
-      return this.setState({
-        deleteDialogOpen: false,
-        loading: false,
-        alertContent: 'Nie masz uprawnień do usunięcia tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
-        severity: 'error', 
-        snackBarAlertSuccess: true,
-      })  
+      if (this.state.user.accessLevel === 3) {
+        return this.deleteRecord();
+      }
+      else if (this.state.user.accessLevel === 2) {
+        const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
+        for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
+          if (this.state.selectedDocAuthor[i] !== fullName) {
+            return this.setState({
+              deleteDialogOpen: false,
+              loading: false,
+              alertContent: 'Nie masz uprawnień do usunięcia przynajmniej jednego z tych plików. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+              severity: 'error', 
+              snackBarAlertSuccess: true,
+            })  
+          }
+        }   
+        return this.deleteRecord();
+      }
+      else {
+        return this.setState({
+          deleteDialogOpen: false,
+          loading: false,
+          alertContent: 'Nie masz uprawnień do usunięcia tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
+          severity: 'error', 
+          snackBarAlertSuccess: true,
+        })  
+      }
     }
   }
 

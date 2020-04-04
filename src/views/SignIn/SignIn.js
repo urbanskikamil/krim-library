@@ -91,13 +91,10 @@ const SignIn = props => {
     setLoading(true)
     axios.post('/login/sign-in', formState.values)
       .then(response => {
-        console.log('response',response)
         setLoading(false)
         if (response.data.emailAuthenticated) {
           if (response.data.validPassword) {
-            //sessionStorage.setItem('session', response.data.session)
             sessionStorage.setItem('session', JSON.stringify(response.data.session))
-            //console.log('session', sessionStorage.getItem('session.user.email'))
             return history.push('/');
           }
           setSnackBarOpen(true);
