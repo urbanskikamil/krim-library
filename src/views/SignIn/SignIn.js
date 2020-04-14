@@ -138,7 +138,7 @@ const SignIn = props => {
                   error={hasError('email')}
                   fullWidth
                   helperText={
-                    hasError('email') ? formState.errors.email[0] : null
+                    hasError('email') ? 'Niepoprawny format adresu email' : null
                   }
                   label="Adres email"
                   name="email"
@@ -152,7 +152,7 @@ const SignIn = props => {
                   error={hasError('password')}
                   fullWidth
                   helperText={
-                    hasError('password') ? formState.errors.password[0] : null
+                    hasError('password') ? 'Hasło powinno zawierać co najmniej 6 znaków' : null
                   }
                   label="Hasło"
                   name="password"

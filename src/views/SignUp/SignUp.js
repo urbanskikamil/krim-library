@@ -210,7 +210,7 @@ const SignUp = props => {
                   error={hasError('firstName')}
                   fullWidth
                   helperText={
-                    hasError('firstName') ? formState.errors.firstName[0] : null
+                    hasError('firstName') ? 'Pole wymagane' : null
                   }
                   label="Imię"
                   name="firstName"
@@ -224,7 +224,7 @@ const SignUp = props => {
                   error={hasError('lastName')}
                   fullWidth
                   helperText={
-                    hasError('lastName') ? formState.errors.lastName[0] : null
+                    hasError('lastName') ? 'Pole wymagane' : null
                   }
                   label="Nazwisko"
                   name="lastName"
@@ -238,7 +238,7 @@ const SignUp = props => {
                   error={hasError('email')}
                   fullWidth
                   helperText={
-                    hasError('email') ? formState.errors.email[0] : null
+                    hasError('email') ? 'Niepoprawny format adresu email' : null
                   }
                   label="Adres email"
                   name="email"
@@ -252,7 +252,7 @@ const SignUp = props => {
                   error={hasError('password')}
                   fullWidth
                   helperText={
-                    hasError('password') ? formState.errors.password[0] : null
+                    hasError('password') ? 'Hasło powinno zawierać co najmniej 6 znaków' : null
                   }
                   label="Hasło"
                   name="password"
