@@ -25,7 +25,7 @@ const types = [
   {value: 'Praca doktorska'},
 ]
 
-const session = JSON.parse(sessionStorage.getItem('session'))
+//const session = JSON.parse(sessionStorage.getItem('session'))
 
 class ThesisDocuments extends Component {
   state = {
@@ -55,6 +55,8 @@ class ThesisDocuments extends Component {
     selectedDocAuthor: '',
   }
 
+  session = JSON.parse(sessionStorage.getItem('session'))
+
   fields = [
     {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
     {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
@@ -74,7 +76,7 @@ class ThesisDocuments extends Component {
 
   componentDidMount () {
     this.refreshData();
-    axios.get(`/login/getData/${session.userEmail}`)
+    axios.get(`/login/getData/${this.session.userEmail}`)
       .then(response => {
         this.setState({ user: response.data })
       })
@@ -259,7 +261,7 @@ class ThesisDocuments extends Component {
   }
 
   handleFileDownload = (file) => { 
-    if (session) {
+    if (this.session) {
       if (this.state.user.accessLevel === 0) {
         return this.setState({
           alertContent: 'Nie masz uprawnień do pobrania tego pliku. Aby uzyskać dostęp poproś o niego w zakładce "Uzyskaj dostęp"',
