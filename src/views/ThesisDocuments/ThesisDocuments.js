@@ -16,6 +16,7 @@ const categories = [
   {label: 'Nazwa', key: 'title'},
   {label: 'Dotyczy', key: 'field'},
   {label: 'Autor', key: 'author'},
+  {label: 'Nr. indeksu', key: 'studentId'},
   {label: 'Promotor', key: 'supervisor'},
 ]
 
@@ -34,6 +35,8 @@ class ThesisDocuments extends Component {
     dialogOpen: false,
     title: '',
     author: '',
+    studentId: '',
+    uploaderId: '',
     supervisor: '',
     documentType: '',
     contains: [],
@@ -60,6 +63,7 @@ class ThesisDocuments extends Component {
   fields = [
     {id: 'title', label: 'Tytuł dokumentu', change: 'handleTitleChange'},
     {id: 'author', label: 'Autor',change: 'handleAuthorChange'},
+    {id: 'studentId', label: 'Nr. indeksu',change: 'handleStudentIdChange'},
     {id: 'supervisor', label: 'Promotor', change: 'handleSupervisorChange'},
   ]
 
@@ -78,6 +82,7 @@ class ThesisDocuments extends Component {
     this.refreshData();
     axios.get(`/login/getData/${this.session.userEmail}`)
       .then(response => {
+        console.log('respdata',response.data)
         this.setState({ user: response.data })
       })
   }
@@ -102,6 +107,7 @@ class ThesisDocuments extends Component {
       dialogOpen: false,
       title: '',
       author: '',
+      studentId: '',
       supervisor: '',
       documentType: '',
       contains: [],
@@ -116,6 +122,8 @@ class ThesisDocuments extends Component {
   
   handleSupervisorChange = (event) => {this.setState({supervisor: event.target.value})}
 
+  handleStudentIdChange = (event) => {this.setState({studentId: event.target.value})}
+  
   handleContainsChange = (event) => {  
     let copiedContains = [...this.state.contains];
     copiedContains = event.target.value;
@@ -125,9 +133,9 @@ class ThesisDocuments extends Component {
   handleSubmit = (event) => {
     this.uploadFiles()
     
-    const { documentType, title, contains, author, supervisor, file } = this.state
+    const { documentType, title, contains, author, supervisor, studentId, user, file } = this.state
 
-    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '') 
+    if (title === '' || author === '' || supervisor === '' || documentType === '' || contains === [] || file === '' || studentId === '') 
       this.setState({
         alertContent: 'Proszę wypełnić wszystkie pola',
         severity: 'warning', 
@@ -142,6 +150,8 @@ class ThesisDocuments extends Component {
         title: title,
         field: contains.join(', '),
         author: author,
+        studentId: studentId,
+        uploaderId: user._id,
         supervisor: supervisor,
         addedAt: moment(),
         file: file.name
@@ -155,6 +165,7 @@ class ThesisDocuments extends Component {
             author: '',
             supervisor: '',
             documentType: '',
+            studentId: '',
             contains: [],
             file: ''
           })
@@ -181,6 +192,7 @@ class ThesisDocuments extends Component {
               loading: false,
               title: '',
               author: '',
+              studentId: '',
               supervisor: '',
               documentType: '',
               contains: [],
@@ -234,9 +246,10 @@ class ThesisDocuments extends Component {
         return this.deleteRecord();
       }
       else if (this.state.user.accessLevel === 2) {
-        const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
-        for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
-          if (this.state.selectedDocAuthor[i] !== fullName) {
+        for (let i=0; i < this.state.selectedRecords.length; i++) {
+          const record = this.state.documentsData.find(el => el.id === this.state.selectedRecords[i])
+          
+          if (record.uploaderId !== this.state.user._id) {
             return this.setState({
               deleteDialogOpen: false,
               loading: false,
@@ -314,6 +327,8 @@ class ThesisDocuments extends Component {
   uploadFiles = () => {
     const data = new FormData();
     data.append('file', this.state.file);
+    data.append('type', this.state.documentType);
+    data.append('studentId', this.state.studentId);
 
     axios.put('/documents/thesis/upload/', data)
       .then(response => console.log('uploaded',response.data))
@@ -445,7 +460,9 @@ class ThesisDocuments extends Component {
           title={this.state.title}
           titleChange={this.handleTitleChange}
           author={this.state.author}
-          authorChange={this.handleAuthorChange}
+          authorChange={this.handleAuthorChange}          
+          studentId={this.state.studentId}
+          studentIdChange={this.handleStudentIdChange}
         />
         <DeleteDialog 
           closed={this.handleDeleteDialogClose}

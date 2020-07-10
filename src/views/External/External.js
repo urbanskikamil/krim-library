@@ -29,6 +29,7 @@ class External extends Component {
     dialogOpen: false,
     title: '',
     author: '',
+    uploaderId: '',
     documentType: '',
     contains: [],
     date: '',
@@ -115,7 +116,7 @@ class External extends Component {
   handleSubmit = (event) => {
     this.uploadFiles()
     
-    const { documentType, title, contains, author, file } = this.state
+    const { documentType, title, contains, author, user, file } = this.state
 
       if (title === '' || author === '' || documentType === '' || contains === [] || file === '') 
         this.setState({
@@ -132,6 +133,7 @@ class External extends Component {
           title: title,
           field: contains.join(', '),
           author: author,
+          uploaderId: user._id,
           addedAt: moment(),
           file: file.name
         })
@@ -221,9 +223,10 @@ class External extends Component {
         return this.deleteRecord();
       }
       else if (this.state.user.accessLevel === 2) {
-        const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
-        for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
-          if (this.state.selectedDocAuthor[i] !== fullName) {
+        for (let i=0; i < this.state.selectedRecords.length; i++) {
+          const record = this.state.documentsData.find(el => el.id === this.state.selectedRecords[i])
+          
+          if (record.uploaderId !== this.state.user._id) {
             return this.setState({
               deleteDialogOpen: false,
               loading: false,

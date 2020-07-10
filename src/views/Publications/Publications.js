@@ -28,6 +28,7 @@ class Publications extends Component {
     dialogOpen: false,
     title: '',
     author: '',
+    uploaderId: '',
     documentType: '',
     contains: [],
     date: '',
@@ -114,7 +115,7 @@ class Publications extends Component {
   handleSubmit = (event) => {
     this.uploadFiles()
     
-    const { documentType, title, contains, author, studiesClass, file } = this.state
+    const { documentType, title, contains, author, studiesClass, user, file } = this.state
 
       if (title === '' || author === '' || studiesClass === '' || documentType === '' || contains === [] || file === '') 
         this.setState({
@@ -131,6 +132,7 @@ class Publications extends Component {
           title: title,
           field: contains.join(', '),
           author: author,
+          uploaderId: user._id,
           addedAt: moment(),
           file: file.name
         })
@@ -220,9 +222,10 @@ class Publications extends Component {
         return this.deleteRecord();
       }
       else if (this.state.user.accessLevel === 2) {
-        const fullName = `${this.state.user.firstName} ${this.state.user.lastName}`
-        for (let i=0; i < this.state.selectedDocAuthor.length; i++) {
-          if (this.state.selectedDocAuthor[i] !== fullName) {
+        for (let i=0; i < this.state.selectedRecords.length; i++) {
+          const record = this.state.documentsData.find(el => el.id === this.state.selectedRecords[i])
+          
+          if (record.uploaderId !== this.state.user._id) {
             return this.setState({
               deleteDialogOpen: false,
               loading: false,
@@ -231,7 +234,7 @@ class Publications extends Component {
               snackBarAlertSuccess: true,
             })  
           }
-        }
+        }   
         return this.deleteRecord();
       }
       else {

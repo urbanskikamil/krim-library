@@ -31,7 +31,9 @@ const DialogWindow = (props) => {
             </DialogContentText>
             <InputField 
               author={props.author}
-              handleAuthorChange={props.authorChange}
+              handleAuthorChange={props.authorChange}              
+              studentId={props.studentId}
+              handleStudentIdChange={props.studentIdChange}
               supervisor={props.supervisor ? props.supervisor : ''}
               handleSupervisorChange={props.supervisorChange ? props.supervisorChange : ''}
               studiesClass={props.studiesClass ? props.studiesClass : ''}
